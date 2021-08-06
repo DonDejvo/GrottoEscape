@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: black;
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.gameContainer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    touch-action: none;
+    transform-origin: center;
+    background: lightgreen;
+}
+
+#game {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.loadingIntro {
+    z-index: 5;
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: darkslategrey;
+    color: mintcream;
+}
+
+.vertically-centered {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 40%;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.text-centered {
+    text-align: center;
+}
+
+.progressBar {
+    width: 260px;
+    height: 40px;
+    margin: 32px auto 16px auto;
+    border: 2px solid mintcream;
+    padding: 6px;
+}
+
+.progressBar_progress {
+    width: 100%;
+    height: 100%;
+    background: goldenrod;
+}
