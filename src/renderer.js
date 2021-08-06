@@ -28,4 +28,27 @@ export class Renderer {
         }
         this._container.style.transform = `translate(-50%, -50%) scale(${this._scale})`;
     }
+    Render(scene) {
+        this._context.beginPath();
+        this._context.clearRect(0, 0, this._width, this._height);
+        this._context.save();
+        this._context.translate(-scene._camera._pos.x + this._width / 2, -scene._camera._pos.y + this._height / 2);
+        this._context.scale(scene._camera._scale, scene._camera._scale);
+        for(let elem of scene._drawable) {
+            const pos = elem._pos.Clone();
+            pos.Sub(scene._camera._pos);
+            pos.Mult(scene._camera._scale);
+            const [width, height] = [elem._width, elem._height].map((e) => e * scene._camera._scale);
+            if(
+                pos.x + width / 2 < -this._width / 2 ||
+                pos.x - width / 2 > this._width / 2 ||
+                pos.y + height / 2 < -this._height / 2 ||
+                pos.y - height / 2 > this._height / 2
+            ) {
+                continue;
+            }
+            elem.Draw(this._context);
+        }
+        this._context.restore();
+    }
 }
