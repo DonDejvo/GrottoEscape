@@ -29,7 +29,13 @@ class Game {
             .AddAudio("pickup-sound", "audio/sounds/pickup.wav")
             .AddJSON("tileset", "layouts/grottoEnvironment.json")
             .Load((data) => {
-
+                this._resources = data;
+                this._resources["pickup-sound"].play();
+                document.querySelector(".loadingText").textContent = "Done";
+                document.querySelector(".loadingIntro").style.opacity = 0;
+                setTimeout(() => {
+                    document.querySelector(".loadingIntro").style.display = "none";
+                }, 1000);
             });
     }
     _Init() {
@@ -39,7 +45,7 @@ class Game {
             const emptySound = new Audio("empty.mp3");
             emptySound.play();
             this._Preload();
-        });
+        }, {once: true});
     }
 }
 

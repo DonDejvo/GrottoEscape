@@ -77,8 +77,8 @@ export class Loader {
         });
     }
     static LoadAudio(p, cb) {
-        const audio = new Audio();
-        audio.src = p;
+        const audio = new Audio(p);
+        audio.load();        
         audio.addEventListener("canplaythrough", () => {
             cb(audio);
         });
