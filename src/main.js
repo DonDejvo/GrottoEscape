@@ -42,8 +42,6 @@ class Game {
         this._renderer = new Renderer(480, 720, document.querySelector(".gameContainer"), document.getElementById("game"));
         const eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
         window.addEventListener(eventByDevice, () => {
-            const emptySound = new Audio("empty.mp3");
-            emptySound.play();
             this._Preload();
         }, {once: true});
     }
