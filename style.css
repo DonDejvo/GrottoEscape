@@ -9,13 +9,14 @@ body {
     user-select: none;
     -webkit-user-select: none;
     font-family: 'Press Start 2P', cursive;
+    overflow: hidden;
+    touch-action: none;
 }
 
 .gameContainer {
     position: absolute;
     left: 50%;
     top: 50%;
-    touch-action: none;
     transform-origin: center;
     background: lightgreen;
 }

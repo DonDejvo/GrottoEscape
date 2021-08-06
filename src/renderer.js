@@ -20,7 +20,7 @@ export class Renderer {
         });
     }
     _OnResize() {
-        const [width, height] = [window.innerWidth, window.innerHeight];
+        const [width, height] = [document.body.clientWidth, document.body.clientHeight];
         if(width / height > this._aspect) {
             this._scale = height / this._height;
         } else {
