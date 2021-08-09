@@ -41,7 +41,7 @@ body {
     height: 100%;
     background: darkslategrey;
     color: mintcream;
-    transition: 1600ms all;
+    transition: 1400ms all;
     opacity: 1;
 }
 
@@ -76,7 +76,7 @@ body {
 }
 
 .mainMenu {
-    z-index: 4;
+    z-index: 3;
     position: absolute;
     left: 0;
     top: 0;
@@ -121,4 +121,82 @@ body {
     height: 100%;
     background: rgba(255,255,255,.2);
     filter: blur(10px);
+}
+
+.loadingScreen {
+    z-index: 4;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #303030;
+    color: mintcream;
+}
+
+@keyframes loading {
+    0% {
+        content: "Loading..";
+    }
+    25% {
+        content: "Loading...";
+    }
+    50% {
+        content: "Loading";
+    }
+    75% {
+        content: "Loading.";
+    }
+    100% {
+        content: "Loading..";
+    }
+}
+
+.levelLoadingText {
+    position: relative;
+    margin-top: 24px;
+}
+
+.levelLoadingText::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    animation: loading 1400ms infinite;
+}
+
+.levelLoadingHint {
+    position: absolute;
+    left: 10%;
+    bottom: 10%;
+    width: 80%;
+    font-size: smaller;
+    padding: 12px;
+    display: inline-block;
+}
+
+.textbox-container {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 24px;
+}
+
+.textbox {
+    border: 4px solid mintcream;
+    padding: 4px;
+}
+#textbox-text {
+    border: 2px solid black;
+    padding: 4px;
+    background: mintcream;
+    font-size: x-small;
+}
+
+.textbox-character {
+    width: 20%;
+    border: 4px solid goldenrod;
+    background: black;
 }

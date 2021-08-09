@@ -8,20 +8,29 @@ export const entity = (() => {
             this._components = {};
             this._parent = null;
             this._name = null;
+            this._scene = null;
         }
-        Initialize() {}
-        Deinitialize() {}
         Update(elapsedTimeS) {
             for(let k in this._components) {
                 this._components[k].Update(elapsedTimeS);
             }
         }
-        AddComponent(c) {
-            this._components[c.constructor.name] = c;
+        AddComponent(c, n) {
+            if(!n) {
+                n = c.constructor.name;
+            }
+            this._components[n] = c;
             c._parent = this;
+            c.InitComponent();
+        }
+        GetComponent(n) {
+            return this._components[n];
         }
         SetPosition(p) {
             this._pos.Copy(p);
+        }
+        FindEntity(n) {
+            return this._parent.Get(n);
         }
     }
 
@@ -29,7 +38,14 @@ export const entity = (() => {
         constructor() {
             this._parent = null;
         }
-        Update(elapsedTimeS) {}
+        InitComponent() {}
+        GetComponent(n) {
+            return this._parent.GetComponent(n);
+        }
+        FindEntity(n) {
+            return this._parent.FindEntity(n);
+        }
+        Update(_) {}
     }
 
     return {

@@ -1,6 +1,6 @@
 import { entity } from "./entity.js";
 
-export class Drawable extends entity.Entity {
+export class Drawable extends entity.Component {
     constructor(params) {
         super();
         this._params = params;
@@ -8,9 +8,12 @@ export class Drawable extends entity.Entity {
         this._height = this._params.height;
         this._zIndex = (this._params.zIndex || 0);
     }
+    InitComponent() {
+        this._pos = this._parent._pos;
+    }
     SetSize(w, h) {
         this._width = w;
         this._height = h;
     }
-    Draw() {}
+    Draw(_) {}
 }

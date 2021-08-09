@@ -27,6 +27,7 @@ export class Renderer {
             this._scale = width / this._width;
         }
         this._container.style.transform = `translate(-50%, -50%) scale(${this._scale})`;
+        this._context.imageSmoothingEnabled = false;
     }
     Render(scene) {
         this._context.beginPath();

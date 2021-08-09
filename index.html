@@ -13,7 +13,7 @@
     <div class="gameContainer">
         <div class="loadingIntro">
             <div class="vertically-centered text-centered">
-                <h1 class="loadingText">Loading...</h1>
+                <h2 class="loadingText">Click to start</h2>
                 <div class="progressBar">
                     <div class="progressBar_progress"></div>
                 </div>
@@ -43,12 +43,25 @@
                 </ul>
             </div>
         </div>
-        <div class="loadingScreen">
-
+        <div class="loadingScreen text-centered">
+            <div class="vertically-centered">
+                <div style="display: inline-block; background: black; padding: 12px;">
+                    <img src="res/assets/gifs/player.gif" alt="Running Grotto">
+                </div>
+                <p class="levelLoadingText"></p>
+            </div>
+            <p class="levelLoadingHint">Hint: Don't jump into lava</p>
         </div>
         <div class="levelScreen">
             <canvas id="game"></canvas>
-
+            <div class="textbox-container">
+                <div class="textbox-character">
+                    <img src="res/assets/png/player.png" width="100%" height="100%" id="talking-character" alt="Talking character">
+                </div>
+                <div class="textbox">
+                    <p id="textbox-text">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Etiam ligula pede, sagittis quis, interdum ultricies, scelerisque eu. Maecenas lorem. Nulla est. Aliquam id dolor. Curabitur sagittis hendrerit ante.</p>
+                </div>
+            </div>
         </div>
     </div>
     <script src="src/main.js" type="module"></script>

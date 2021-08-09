@@ -16,7 +16,6 @@ export class EntityManager {
         this._entitiesMap[n] = e;
         e._parent = this;
         e._name = n;
-        e.Initialize();
     }
     Get(n) {
         return this._entitiesMap[n];
@@ -27,8 +26,6 @@ export class EntityManager {
             return;
         }
         this._entities.splice(i, 1);
-        e._active = false;
-        e.Deinitialize();
     }
     Filter(cb) {
         return this._entities.filter(cb);

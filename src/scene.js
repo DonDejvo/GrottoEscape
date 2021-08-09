@@ -6,20 +6,21 @@ export class Scene {
         this._entityManager = new EntityManager();
         this._drawable = [];
         this._camera = new Camera();
+        this._paused = true;
     }
     Add(e, n) {
+        e._scene = this;
         this._entityManager.Add(e, n);
-        if(e.Draw) {
-            this._AddDrawable(e);
+        const drawobj = e.GetComponent("drawobj");
+        if(drawobj) {
+            this._AddDrawable(drawobj);
         }
     }
     Remove(e) {
         this._entityManager.Remove(e);
-        if(e.Draw) {
-            const i = this._drawable.indexOf(e);
-            if(i > 0) {
-                this._drawable.splice(i, 1);
-            }
+        const drawobj = e.GetComponent("drawobj");
+        if(drawobj) {
+            this._RemoveDrawable(drawobj);
         }
     }
     _AddDrawable(e) {
@@ -31,7 +32,22 @@ export class Scene {
             [this._drawable[i], this._drawable[i - 1]] = [this._drawable[i - 1], this._drawable[i]];
         }
     }
+    _RemoveDrawable(e) {
+        const i = this._drawable.indexOf(e);
+        if(i > 0) {
+            this._drawable.splice(i, 1);
+        }
+    }
+    Play() {
+        this._paused = false;
+    }
+    Pause() {
+        this._paused = true;
+    }
     Update(elapsedTimeS) {
+        if(this._paused) {
+            return;
+        }
         this._entityManager.Update(elapsedTimeS);
     }
 }
