@@ -41,7 +41,7 @@ export class Camera {
         }
         if(this._scaling) {
             const anim = this._scaling;
-            anim.counter += elapsedTimeS;
+            anim.counter += elapsedTimeS * 1000;
             const progress = Math.min(anim.counter / anim.dur, 1);
             let value;
             switch(anim.timing) {

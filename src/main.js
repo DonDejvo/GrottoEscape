@@ -4,6 +4,7 @@ import { Level } from "./level.js";
 import { Loader } from "./loader.js";
 import { Renderer } from "./renderer.js";
 import { Scene } from "./scene.js";
+import { textbox } from "./textbox.js";
 import { tileset } from "./tileset.js";
 import { Vector } from "./vector.js";
 
@@ -45,19 +46,18 @@ class Game {
                     tilemap: this._resources["level01"], 
                     tileset: this._tileset,
                     tileWidth: 32,
-                    tileHeight: 32
+                    tileHeight: 32,
+                    textboxHandler: this._textboxHandler
                 });
                 this._levelScene._camera.SetPosition(new Vector(400, 200));
                 this._levelScene.Play();
                 this._scene = this._levelScene;
                 this._PlayMusic(this._resources["levelTheme"]);
+                this._levelScene._camera.SetScale(2);
                 setTimeout(() => {
-                    this._levelScene.Pause();
-                    document.querySelector(".textbox-container").style.display = "block";
-                    window.addEventListener(this._eventByDevice, () => {
-                        document.querySelector(".textbox-container").style.display = "none";
-                        this._levelScene.Play();
-                    }, {once: true});
+                    this._levelScene.AddMessage("res/assets/png/player.png", "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse nisl. Nullam eget nisl. Integer in sapien. Nam quis nulla. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est.");
+                    this._levelScene.AddMessage("res/assets/png/player.png", "Fusce consectetuer risus a nunc. Suspendisse nisl. Curabitur bibendum justo non orci. Aenean fermentum risus id tortor. Quisque tincidunt scelerisque libero. Nam sed tellus id magna elementum tincidunt.");
+                    this._levelScene._camera.ScaleTo(1, 1200, "ease-out");
                 }, 250);
             }, 3000);
         });
@@ -65,7 +65,6 @@ class Game {
     _OpenMenu() {
         this._PlayMusic(this._resources["menuTheme"]);
         this._scene = this._menuScene;
-        document.querySelector(".textbox-container").style.display = "none";
     }
     _Preload() {
         const loader = new Loader();
@@ -118,6 +117,9 @@ class Game {
 
         this._renderer = new Renderer(480, 720, document.querySelector(".gameContainer"), document.getElementById("game"));
         this._eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
+        this._textboxHandler = new textbox.TextboxHandler({
+            domElement: document.querySelector(".textbox-container")
+        });
         window.addEventListener(this._eventByDevice, () => {
             document.querySelector(".loadingText").textContent = "Loading...";
             this._Preload();

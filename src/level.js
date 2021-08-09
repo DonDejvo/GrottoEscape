@@ -7,6 +7,8 @@ export class Level extends Scene {
     constructor(params) {
         super();
         this._params = params;
+        this._textboxHandler = this._params.textboxHandler;
+        window.addEventListener(this._eventByDevice, () => this._NextMessage());
         this._Init();
     }
     _Init() {
@@ -77,6 +79,20 @@ export class Level extends Scene {
             } else if(tilemap.layers[i].type == "objectgroup") {
                 HandleObjectgroup(tilemap.layers[i], i);
             }
+        }
+    }
+    AddMessage(imageURL, text) {
+        this._textboxHandler.AddMessage(imageURL, text);
+        if(!this._textboxHandler._blocked) {
+            this._NextMessage();
+        }
+    }
+    _NextMessage() {
+        this._textboxHandler.NextMessage();
+        if(this._textboxHandler._blocked) {
+            this.Pause();
+        } else {
+            this.Play();
         }
     }
 }

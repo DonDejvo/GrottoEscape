@@ -7,6 +7,7 @@ export class Scene {
         this._drawable = [];
         this._camera = new Camera();
         this._paused = true;
+        this._eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
     }
     Add(e, n) {
         e._scene = this;
@@ -49,5 +50,6 @@ export class Scene {
             return;
         }
         this._entityManager.Update(elapsedTimeS);
+        this._camera.Update(elapsedTimeS);
     }
 }

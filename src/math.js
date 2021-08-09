@@ -16,10 +16,10 @@ export const math = (function() {
             return Math.min(Math.max(x, 0), 1);
         },
         ease_out(x) {
-            return Math.min(Math.max(x**0.5, 0), 1);
+            return Math.min(Math.max(Math.pow(x, 1 / 3), 0), 1);
         },
         ease_in(x) {
-            return Math.min(Math.max(x * x, 0), 1);
+            return Math.min(Math.max(Math.pow(x, 3), 0), 1);
         }
     }
 })();

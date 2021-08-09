@@ -9,7 +9,7 @@ html, body {
 }
 
 body {
-    background: black;
+    background: white;
     user-select: none;
     -webkit-user-select: none;
     font-family: 'Press Start 2P', cursive;
@@ -30,6 +30,7 @@ body {
     display: block;
     width: 100%;
     height: 100%;
+    background: black;
 }
 
 .loadingIntro {
@@ -178,25 +179,28 @@ body {
 }
 
 .textbox-container {
-    position: absolute;
-    left: 0;
-    bottom: 0;
     margin: 24px;
 }
 
-.textbox {
+.textbox-text {
     border: 4px solid mintcream;
     padding: 4px;
 }
-#textbox-text {
+.textbox-text > p {
     border: 2px solid black;
     padding: 4px;
     background: mintcream;
     font-size: x-small;
 }
 
-.textbox-character {
-    width: 20%;
+.textbox-image {
+    width: 96px;
+    height: 96px;
     border: 4px solid goldenrod;
     background: black;
+}
+
+.textbox-image > img {
+    width: 100%;
+    height: 100%;
 }
