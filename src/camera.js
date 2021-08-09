@@ -1,3 +1,4 @@
+import { math } from "./math.js";
 import { Vector } from "./vector.js";
 
 export class Camera {
@@ -6,6 +7,7 @@ export class Camera {
         this._scale = 1.0;
         this._target = null;
         this._vel = new Vector(0, 0);
+        this._scaling = null;
     }
     Follow(target) {
         this._target = target;
@@ -19,8 +21,14 @@ export class Camera {
     SetScale(s) {
         this._scale = s;
     }
-    ScaleTo(s, dur) {
-
+    ScaleTo(s, dur, timing = "linear") {
+        this._scaling = {
+            counter: 0,
+            dur: dur,
+            from: this._scale,
+            to: s,
+            timing: timing
+        };
     }
     Update(elapsedTimeS) {
         if(this._target) {
@@ -31,6 +39,26 @@ export class Camera {
             vel.Mult(elapsedTimeS);
             this._pos.Add(vel);
         }
-
+        if(this._scaling) {
+            const anim = this._scaling;
+            anim.counter += elapsedTimeS;
+            const progress = Math.min(anim.counter / anim.dur, 1);
+            let value;
+            switch(anim.timing) {
+                case "linear":
+                    value = progress;
+                    break;
+                case "ease-in":
+                    value = math.ease_in(progress);
+                    break;
+                case "ease-out":
+                    value = math.ease_out(progress);
+                    break;
+            }
+            this._scale = math.lerp(value, anim.from, anim.to);
+            if(progress == 1) {
+                this._scaling = null;
+            }
+        }
     }
 }

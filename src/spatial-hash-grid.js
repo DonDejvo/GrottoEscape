@@ -1,4 +1,5 @@
 import { entity } from "./entity.js";
+import { math } from "./math.js";
 
 export const spatial_hash_grid = (() => {
 
@@ -12,10 +13,10 @@ export const spatial_hash_grid = (() => {
       }
     
       _GetCellIndex(position) {
-        const x = Math.min(Math.max((position[0] - this._bounds[0][0]) / (
-            this._bounds[1][0] - this._bounds[0][0]), 0), 1);
-        const y = Math.min(Math.max((position[1] - this._bounds[0][1]) / (
-            this._bounds[1][1] - this._bounds[0][1]), 0), 1);
+        const x = math.sat((position[0] - this._bounds[0][0]) / (
+            this._bounds[1][0] - this._bounds[0][0]));
+        const y = math.sat((position[1] - this._bounds[0][1]) / (
+            this._bounds[1][1] - this._bounds[0][1]));
     
         const xIndex = Math.floor(x * (this._dimensions[0] - 1));
         const yIndex = Math.floor(y * (this._dimensions[1] - 1));
