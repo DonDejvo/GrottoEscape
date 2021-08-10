@@ -2,12 +2,14 @@ import { Camera } from "./camera.js";
 import { EntityManager } from "./entity-manager.js";
 
 export class Scene {
-    constructor() {
+    constructor(params) {
+        this._params = params;
         this._entityManager = new EntityManager();
         this._drawable = [];
         this._camera = new Camera();
         this._paused = true;
         this._eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
+        this._resources = this._params.resources;
     }
     Add(e, n) {
         e._scene = this;
@@ -23,6 +25,9 @@ export class Scene {
         if(drawobj) {
             this._RemoveDrawable(drawobj);
         }
+    }
+    Get(n) {
+        return this._entityManager.Get(n);
     }
     _AddDrawable(e) {
         this._drawable.push(e);

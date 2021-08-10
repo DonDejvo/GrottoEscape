@@ -23,7 +23,9 @@ class Game {
     }
     _InitMenu() {
         this._resources["menuTheme"].loop = true;
-        this._menuScene = new Scene();
+        this._menuScene = new Scene({
+            resources: this._resources
+        });
         const layer = new entity.Entity();
         layer.AddComponent(new Layer({
             width: 1504 * 2,
@@ -45,11 +47,12 @@ class Game {
                 this._levelScene = new Level({
                     tilemap: this._resources["level01"], 
                     tileset: this._tileset,
-                    tileWidth: 32,
-                    tileHeight: 32,
-                    textboxHandler: this._textboxHandler
+                    tileWidth: 16 * 3,
+                    tileHeight: 16 * 3,
+                    textboxHandler: this._textboxHandler,
+                    resources: this._resources
                 });
-                this._levelScene._camera.SetPosition(new Vector(400, 200));
+                this._levelScene._camera.SetPosition(new Vector(350, 200));
                 this._levelScene.Play();
                 this._scene = this._levelScene;
                 this._PlayMusic(this._resources["levelTheme"]);
@@ -58,7 +61,10 @@ class Game {
                     this._levelScene.AddMessage("res/assets/png/player.png", "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Suspendisse nisl. Nullam eget nisl. Integer in sapien. Nam quis nulla. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est.");
                     this._levelScene.AddMessage("res/assets/png/player.png", "Fusce consectetuer risus a nunc. Suspendisse nisl. Curabitur bibendum justo non orci. Aenean fermentum risus id tortor. Quisque tincidunt scelerisque libero. Nam sed tellus id magna elementum tincidunt.");
                     this._levelScene._camera.ScaleTo(1, 1200, "ease-out");
-                }, 250);
+                }, 0);
+                const player = this._levelScene.Get("player");
+                player.GetComponent("drawobj").PlayAnim("jump", 200, true);
+                this._levelScene._camera.Follow(player);
             }, 3000);
         });
     }
@@ -91,8 +97,8 @@ class Game {
             .AddAudio("pickup-sound", "audio/sounds/pickup.wav")
             .AddAudio("menuTheme", "audio/bg-music/menuTheme.mp3")
             .AddAudio("levelTheme", "audio/bg-music/levelTheme.mp3")
-            .AddJSON("tileset", "layouts/grottoEnvironment.json")
-            .AddJSON("level01", "layouts/level01.json")
+            .AddJSON("tileset", "tilesets/grotto_tileset.json")
+            .AddJSON("level01", "levels/level01.json")
             .Load((data) => {
                 this._resources = data;
 
@@ -116,11 +122,12 @@ class Game {
         document.querySelector(".loadingScreen").style.display = "none";
 
         this._renderer = new Renderer(480, 720, document.querySelector(".gameContainer"), document.getElementById("game"));
+        this._renderer.SetBgColor("#021721");
         this._eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
         this._textboxHandler = new textbox.TextboxHandler({
             domElement: document.querySelector(".textbox-container")
         });
-        window.addEventListener(this._eventByDevice, () => {
+        this._renderer._container.addEventListener(this._eventByDevice, () => {
             document.querySelector(".loadingText").textContent = "Loading...";
             this._Preload();
         }, {once: true});

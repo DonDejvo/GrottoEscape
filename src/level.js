@@ -1,32 +1,82 @@
 import { entity } from "./entity.js";
+import { physics } from "./physics.js";
+import { player_entity } from "./player-entity.js";
 import { Scene } from "./scene.js";
+import { spatial_hash_grid } from "./spatial-hash-grid.js";
+import { Sprite } from "./sprite.js";
 import { tile } from "./tile.js";
 import { Vector } from "./vector.js";
 
 export class Level extends Scene {
     constructor(params) {
-        super();
-        this._params = params;
-        this._textboxHandler = this._params.textboxHandler;
-        window.addEventListener(this._eventByDevice, () => this._NextMessage());
+        super(params);
         this._Init();
     }
     _Init() {
+
+        this._textboxHandler = this._params.textboxHandler;
+        this._textboxHandler._domElement.addEventListener(this._eventByDevice, () => this._NextMessage());
+
         const tilemap = this._params.tilemap;
         const tileset = this._params.tileset;
         const tileWidth = this._params.tileWidth;
         const tileHeight = this._params.tileHeight;
 
+        this._grid = new spatial_hash_grid.SpatialHashGrid([[0, 0], [tileWidth * tilemap.width, tileHeight * tilemap.height]], [Math.floor(tilemap.width / 2), Math.floor(tilemap.height / 2)])
+
         const HandleObjectgroup = (layer, zIndex) => {
+            
+            const InitPlayer = (e) => {
+                const sprite = new Sprite({
+                    width: tileWidth,
+                    height: tileHeight,
+                    zIndex: zIndex,
+                    image: this._resources["player"],
+                    frameWidth: 16,
+                    frameHeight: 16
+                });
+                sprite.AddAnim("idle", [
+                    {x: 1, y: 1}
+                ]);
+                sprite.AddAnim("run", [
+                    {x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 1, y: 0}
+                ]);
+                sprite.AddAnim("jump", [
+                    {x: 0, y: 1}
+                ]);
+                e.AddComponent(sprite, "drawobj");
+
+                const body = new physics.Box({
+                    width: tileWidth,
+                    height: tileHeight,
+                    frictionX: 0.08,
+                    frictionY: 0.01
+                });
+                e.AddComponent(body, "body");
+
+                const gridController = new spatial_hash_grid.SpatialGridController({
+                    grid: this._grid,
+                    width: body._width,
+                    height: body._height
+                });
+                e.AddComponent(gridController);
+                e.AddComponent(new player_entity.Controller());
+            }
 
             for(let obj of layer.objects) {
-                let elem;
+                let elem, name;
 
                 elem = new entity.Entity();
+                elem.SetPosition(new Vector(obj.x * tileWidth / tilemap.tilewidth, obj.y * tileHeight / tilemap.tileheight));
+
+                switch(obj.name) {
+                    case "player":
+                        InitPlayer(elem);
+                        name = "player";
+                        break;
+                }
                 
-                elem._zIndex = zIndex;
-                elem.SetPosition(new Vector(obj.x, obj.y));
-                this.Add(elem);
+                this.Add(elem, name);
             }
         
         }
@@ -36,6 +86,8 @@ export class Level extends Scene {
             for(let j = 0; j < layer.data.length; ++j) {
 
                 const id = (layer.data[j]) - 1;
+                if(id < 0) continue;
+
                 let t;
                 
                 const tilesetObj = tileset.Get(id);
@@ -44,8 +96,7 @@ export class Level extends Scene {
                     width: tileWidth,
                     height: tileHeight,
                     zIndex: zIndex,
-                    tileset: tileset,
-                    props: tilesetObj.props
+                    tileset: tileset
                 };
 
                 if(tilesetObj.animation) {
@@ -65,8 +116,42 @@ export class Level extends Scene {
                 }
 
                 let elem = new entity.Entity();
-                elem.AddComponent(t, "drawobj");
                 elem.SetPosition(new Vector(j % tilemap.width * tileWidth, Math.floor(j / tilemap.width) * tileHeight));
+                elem.groupList.add("tile");
+                elem.AddComponent(t, "drawobj");
+                
+                if(tilesetObj.props.collide) {
+                    if(tilesetObj.props.type == "block") {
+                        elem.groupList.add("block");
+                        const body = new physics.Box({
+                            width: tileWidth,
+                            height: tileHeight
+                        });
+                        elem.AddComponent(body, "body");
+                        const gridController = new spatial_hash_grid.SpatialGridController({
+                            grid: this._grid,
+                            width: body._width,
+                            height: body._height
+                        });
+                        elem.AddComponent(gridController);
+                    }
+                }
+                /*if(tilesetObj?.props?.collideType) {
+                    const body = new physics.Box({
+                        width: tileWidth,
+                        height: tileHeight
+                    });
+                    elem.AddComponent(body, "body");
+    
+                    const gridController = new spatial_hash_grid.SpatialGridController({
+                        grid: this._grid,
+                        width: tileWidth,
+                        height: tileHeight
+                    });
+                    elem.AddComponent(gridController);
+                }*/
+                
+
                 this.Add(elem);
 
             }

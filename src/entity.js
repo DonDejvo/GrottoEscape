@@ -9,6 +9,7 @@ export const entity = (() => {
             this._parent = null;
             this._name = null;
             this._scene = null;
+            this.groupList = new Set([]);
         }
         Update(elapsedTimeS) {
             for(let k in this._components) {

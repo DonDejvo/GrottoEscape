@@ -4,6 +4,7 @@ export class Renderer {
         this._height = height;
         this._container = container;
         this._canvas = canvas;
+        this._bgColor = "black";
         this._Init();
     }
     _Init() {
@@ -29,14 +30,18 @@ export class Renderer {
         this._container.style.transform = `translate(-50%, -50%) scale(${this._scale})`;
         this._context.imageSmoothingEnabled = false;
     }
+    SetBgColor(c) {
+        this._bgColor = c;
+    }
     Render(scene) {
         this._context.beginPath();
-        this._context.clearRect(0, 0, this._width, this._height);
+        this._context.fillStyle = this._bgColor;
+        this._context.fillRect(0, 0, this._width, this._height);
         this._context.save();
         this._context.translate(-scene._camera._pos.x * scene._camera._scale + this._width / 2, -scene._camera._pos.y * scene._camera._scale + this._height / 2);
         this._context.scale(scene._camera._scale, scene._camera._scale);
         for(let elem of scene._drawable) {
-            const pos = elem._pos.Clone();
+            /*const pos = elem._pos.Clone();
             pos.Sub(scene._camera._pos);
             //pos.Mult(scene._camera._scale);
             const [width, height] = [elem._width, elem._height]//.map((_) => _ * scene._camera._scale);
@@ -47,7 +52,7 @@ export class Renderer {
                 pos.y - height / 2 > this._height / 2
             ) {
                 continue;
-            }
+            }*/
             elem.Draw(this._context);
         }
         this._context.restore();

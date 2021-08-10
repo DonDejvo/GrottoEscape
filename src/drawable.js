@@ -7,6 +7,8 @@ export class Drawable extends entity.Component {
         this._width = this._params.width;
         this._height = this._params.height;
         this._zIndex = (this._params.zIndex || 0);
+        this._flipX = (this._params.flipX || false);
+        this._flipY = (this._params.flipY || false);
     }
     InitComponent() {
         this._pos = this._parent._pos;

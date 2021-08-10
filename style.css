@@ -17,6 +17,7 @@ body {
     touch-action: none;
     position: relative;
     height: 100%;
+    background: black;
 }
 
 .gameContainer {
@@ -179,7 +180,9 @@ body {
 }
 
 .textbox-container {
-    margin: 24px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
 }
 
 .textbox-text {
@@ -194,13 +197,11 @@ body {
 }
 
 .textbox-image {
-    width: 96px;
-    height: 96px;
+    width: 20%;
     border: 4px solid goldenrod;
     background: black;
 }
 
 .textbox-image > img {
     width: 100%;
-    height: 100%;
 }

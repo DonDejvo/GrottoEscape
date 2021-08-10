@@ -34,14 +34,14 @@
                 {
                  "height":0,
                  "id":1,
-                 "name":"skeleton",
+                 "name":"player",
                  "point":true,
                  "rotation":0,
-                 "type":"enemy",
+                 "type":"",
                  "visible":true,
                  "width":0,
-                 "x":89.0393816709606,
-                 "y":77.9094589620905
+                 "x":89.04,
+                 "y":77.91
                 }, 
                 {
                  "height":0,
@@ -49,7 +49,7 @@
                  "name":"coin",
                  "point":true,
                  "rotation":0,
-                 "type":"item",
+                 "type":"",
                  "visible":true,
                  "width":0,
                  "x":254.256900993743,
