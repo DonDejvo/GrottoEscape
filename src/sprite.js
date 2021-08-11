@@ -42,10 +42,16 @@ export class Sprite extends Drawable {
             }
         }
     }
+    get currentAnim() {
+        if(this._currentAnim) {
+            return this._currentAnim.name;
+        }
+        return null;
+    }
     Draw(ctx) {
         ctx.save();
         ctx.translate(this._pos.x, this._pos.y);
-        ctx.scale(this._flipX ? -1 : 1, this._flipY ? -1 : 1);
+        ctx.scale(this._flip.x ? -1 : 1, this._flip.y ? -1 : 1);
         ctx.drawImage(
             this._params.image,
             this._framePos.x * this._params.frameWidth, this._framePos.y * this._params.frameHeight, this._params.frameWidth, this._params.frameHeight,  

@@ -16,6 +16,7 @@ export class Level extends Scene {
 
         this._textboxHandler = this._params.textboxHandler;
         this._textboxHandler._domElement.addEventListener(this._eventByDevice, () => this._NextMessage());
+        this._input = this._params.input;
 
         const tilemap = this._params.tilemap;
         const tileset = this._params.tileset;
@@ -47,7 +48,7 @@ export class Level extends Scene {
                 e.AddComponent(sprite, "drawobj");
 
                 const body = new physics.Box({
-                    width: tileWidth,
+                    width: tileWidth * 0.8,
                     height: tileHeight,
                     frictionX: 0.08,
                     frictionY: 0.01
@@ -61,6 +62,10 @@ export class Level extends Scene {
                 });
                 e.AddComponent(gridController);
                 e.AddComponent(new player_entity.Controller());
+                e.AddComponent(new player_entity.Input({
+                    joystick: this._input.joystick,
+                    jumpButton: this._input.jumpButton
+                }))
             }
 
             for(let obj of layer.objects) {

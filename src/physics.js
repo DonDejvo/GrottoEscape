@@ -13,6 +13,7 @@ export const physics = (() => {
                 y: (this._params.frictionY || 0)
             };
             this._collide = {left: null, right: null, top: null, bottom: null};
+            this._oldCollide = {left: null, right: null, top: null, bottom: null};
         }
         InitComponent() {
             this._pos = this._parent._pos;
@@ -102,14 +103,14 @@ export const physics = (() => {
             }
         }
 
-        if(Math.abs(x1 - x2) < 0.2 && x1 != mover._pos.x) {
+        if(x1 == x2 && x1 != mover._pos.x) {
             mover._pos.x = x1;
             if(mover._vel.x > 0) {
                 mover._collide.right = platform;
             } else {
                 mover._collide.left = platform;
             }
-        } else if(Math.abs(y1 - y2) < 0.2 && y1 != mover._pos.y) {
+        } else if(y1 == y2 && y1 != mover._pos.y) {
             mover._pos.y = y1;
             if(mover._vel.y > 0) {
                 mover._collide.bottom = platform;

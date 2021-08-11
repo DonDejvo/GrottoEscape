@@ -34,6 +34,29 @@ body {
     background: black;
 }
 
+#joystick {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    left: 30px;
+    bottom: 40px;
+    background: blueviolet;
+    border-radius: 50%;
+}
+
+.controlButton {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: chartreuse;
+    border-radius: 50%;
+}
+
+#jump-btn {
+    bottom: 50px;
+    right: 30px;
+}
+
 .loadingIntro {
     z-index: 5;
     position: absolute;

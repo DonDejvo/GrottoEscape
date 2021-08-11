@@ -43,6 +43,10 @@ export class Vector {
     }
     Lerp(v1, alpha) {
         this.Add(v1.Clone().Sub(this).Mult(alpha));
+        return this;
+    }
+    Angle() {
+        return Math.atan2(this.y, this.x);
     }
     static Dot(v1, v2) {
         return v1.x * v2.x + v1.y * v2.y;

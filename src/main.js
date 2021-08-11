@@ -1,4 +1,5 @@
 import { entity } from "./entity.js";
+import { input } from "./input.js";
 import { Layer } from "./layer.js";
 import { Level } from "./level.js";
 import { Loader } from "./loader.js";
@@ -50,7 +51,8 @@ class Game {
                     tileWidth: 16 * 3,
                     tileHeight: 16 * 3,
                     textboxHandler: this._textboxHandler,
-                    resources: this._resources
+                    resources: this._resources,
+                    input: this._input
                 });
                 this._levelScene._camera.SetPosition(new Vector(350, 200));
                 this._levelScene.Play();
@@ -123,10 +125,18 @@ class Game {
 
         this._renderer = new Renderer(480, 720, document.querySelector(".gameContainer"), document.getElementById("game"));
         this._renderer.SetBgColor("#021721");
+
         this._eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
+
         this._textboxHandler = new textbox.TextboxHandler({
             domElement: document.querySelector(".textbox-container")
         });
+
+        this._input = {
+            joystick: new input.Joystick(document.getElementById("joystick")),
+            jumpButton: new input.Button(document.getElementById("jump-btn"))
+        };
+
         this._renderer._container.addEventListener(this._eventByDevice, () => {
             document.querySelector(".loadingText").textContent = "Loading...";
             this._Preload();
