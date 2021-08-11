@@ -63,6 +63,7 @@ export class Level extends Scene {
                 e.AddComponent(gridController);
                 e.AddComponent(new player_entity.Controller());
                 e.AddComponent(new player_entity.Input({
+                    keyboard: this._input.keyboard,
                     joystick: this._input.joystick,
                     jumpButton: this._input.jumpButton
                 }))
@@ -126,8 +127,8 @@ export class Level extends Scene {
                 elem.AddComponent(t, "drawobj");
                 
                 if(tilesetObj.props.collide) {
-                    if(tilesetObj.props.type == "block") {
-                        elem.groupList.add("block");
+                    if(tilesetObj.props.type == "block" || tilesetObj.props.type == "ledder") {
+                        elem.groupList.add(tilesetObj.props.type);
                         const body = new physics.Box({
                             width: tileWidth,
                             height: tileHeight
@@ -184,6 +185,14 @@ export class Level extends Scene {
         } else {
             this.Play();
         }
+    }
+    Play() {
+        super.Play();
+        document.querySelector("#game-controls").style.visibility = "visible";
+    }
+    Pause() {
+        super.Pause();
+        document.querySelector("#game-controls").style.visibility = "hidden";
     }
 }
 

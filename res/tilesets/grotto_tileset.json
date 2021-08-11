@@ -1746,7 +1746,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"box"
+                 "value":"block"
                 }]
         }, 
         {
@@ -1760,7 +1760,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"box"
+                 "value":"block"
                 }]
         }, 
         {
@@ -1774,7 +1774,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"box"
+                 "value":"block"
                 }]
         }, 
         {
@@ -1788,7 +1788,7 @@
                 {
                  "name":"type",
                  "type":"string",
-                 "value":"box"
+                 "value":"block"
                 }]
         }, 
         {

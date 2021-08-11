@@ -69,9 +69,9 @@ export const physics = (() => {
             Collide(mover._pos.x, platform._pos.x, mover._width, platform._width) && 
             Collide(mover._oldPos.y, platform._pos.y, mover._height, platform._height)
         ) {
-            if(mover._vel.x > 0) {
+            if(mover._vel.x > 0 && mover._oldPos.x + mover._width / 2 <= platform._pos.x - platform._width / 2) {
                 x1 = platform._pos.x - (mover._width + platform._width) / 2;
-            } else if(mover._vel.x < 0) {
+            } else if(mover._vel.x < 0 && mover._oldPos.x - mover._width / 2 >= platform._pos.x + platform._width / 2) {
                 x1 = platform._pos.x + (mover._width + platform._width) / 2;
             }
         }
@@ -80,9 +80,9 @@ export const physics = (() => {
             Collide(mover._oldPos.x, platform._pos.x, mover._width, platform._width) && 
             Collide(mover._pos.y, platform._pos.y, mover._height, platform._height)
         ) {
-            if(mover._vel.y > 0) {
+            if(mover._vel.y > 0 && mover._oldPos.y + mover._height / 2 <= platform._pos.y - platform._height / 2) {
                 y1 = platform._pos.y - (mover._height + platform._height) / 2;
-            } else if(mover._vel.y < 0) {
+            } else if(mover._vel.y < 0 && mover._oldPos.y - mover._height / 2 >= platform._pos.y + platform._height / 2) {
                 y1 = platform._pos.y + (mover._height + platform._height) / 2;
             }
         }
@@ -110,7 +110,8 @@ export const physics = (() => {
             } else {
                 mover._collide.left = platform;
             }
-        } else if(y1 == y2 && y1 != mover._pos.y) {
+        }
+        if(y1 == y2 && y1 != mover._pos.y) {
             mover._pos.y = y1;
             if(mover._vel.y > 0) {
                 mover._collide.bottom = platform;
@@ -125,8 +126,16 @@ export const physics = (() => {
     };
 
     const DetectCollision = (body1, body2) => {
-        // Stuff here
+        if(body1.constructor.name == "Box" && body2.constructor.name == "Box") {
+            return DetectCollisionBoxVsBox(body1, body2);
+        }
+        return false;
     };
+
+    const DetectCollisionBoxVsBox = (body1, body2) => {
+        return Math.abs(body1._pos.x - body2._pos.x) < (body1._width + body2._width) / 2 &&
+        Math.abs(body1._pos.y - body2._pos.y) < (body1._height + body2._height) / 2;
+    }
 
     return {
         Box: Box,

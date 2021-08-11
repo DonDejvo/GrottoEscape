@@ -122,6 +122,7 @@ class Game {
     _Init() {
 
         document.querySelector(".loadingScreen").style.display = "none";
+        document.querySelector("#game-controls").style.visibility = "hidden";
 
         this._renderer = new Renderer(480, 720, document.querySelector(".gameContainer"), document.getElementById("game"));
         this._renderer.SetBgColor("#021721");
@@ -133,6 +134,7 @@ class Game {
         });
 
         this._input = {
+            keyboard: new input.Keyboard(),
             joystick: new input.Joystick(document.getElementById("joystick")),
             jumpButton: new input.Button(document.getElementById("jump-btn"))
         };

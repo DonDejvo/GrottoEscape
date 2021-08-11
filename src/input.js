@@ -54,6 +54,7 @@ export const input = (() => {
         constructor() {
             this._keys = new Set();
             this._listeners = {};
+            this._Init();
         }
         _Init() {
             document.addEventListener("keydown", (e) => {
@@ -193,6 +194,12 @@ export const input = (() => {
         }
         get range() {
             return Math.min(this._vec.Mag() / (Math.hypot(this._boundingRect.width, this._boundingRect.height) * 0.5), 1);
+        }
+        get rangeX() {
+            return Math.min(Math.abs(this._vec.x) / (this._boundingRect.width * 0.5), 1);
+        }
+        get rangeY() {
+            return Math.min(Math.abs(this._vec.y) / (this._boundingRect.height * 0.5), 1);
         }
         get angle() {
             return this._vec.Angle();

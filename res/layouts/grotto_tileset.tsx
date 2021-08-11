@@ -741,25 +741,25 @@
  <tile id="114">
   <properties>
    <property name="collide" type="bool" value="true"/>
-   <property name="type" value="box"/>
+   <property name="type" value="block"/>
   </properties>
  </tile>
  <tile id="115">
   <properties>
    <property name="collide" type="bool" value="true"/>
-   <property name="type" value="box"/>
+   <property name="type" value="block"/>
   </properties>
  </tile>
  <tile id="116">
   <properties>
    <property name="collide" type="bool" value="true"/>
-   <property name="type" value="box"/>
+   <property name="type" value="block"/>
   </properties>
  </tile>
  <tile id="117">
   <properties>
    <property name="collide" type="bool" value="true"/>
-   <property name="type" value="box"/>
+   <property name="type" value="block"/>
   </properties>
  </tile>
  <tile id="118">

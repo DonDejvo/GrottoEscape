@@ -36,9 +36,9 @@ body {
 
 #joystick {
     position: absolute;
-    width: 80px;
-    height: 80px;
-    left: 30px;
+    width: 110px;
+    height: 110px;
+    left: 40px;
     bottom: 40px;
     background: blueviolet;
     border-radius: 50%;
@@ -46,14 +46,14 @@ body {
 
 .controlButton {
     position: absolute;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background: chartreuse;
     border-radius: 50%;
 }
 
 #jump-btn {
-    bottom: 50px;
+    bottom: 90px;
     right: 30px;
 }
 
