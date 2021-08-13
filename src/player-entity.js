@@ -36,11 +36,13 @@ export const player_entity = (() => {
 
             const currentAnim = sprite.currentAnim;
 
-            if(this._climbing) {
+            if(this._climbing && !collide.bottom) {
                 if(input._keys.up || input._keys.down) {
-                    if(currentAnim != "ledder-climb") sprite.PlayAnim("ledder-climb", 180, true);
+                    if(currentAnim != "ledder") sprite.PlayAnim("ledder", 180, true);
+                    sprite.Resume();
                 } else {
-                    if(currentAnim != "ledder-idle") sprite.PlayAnim("ledder-idle", 180, false);
+                    if(currentAnim != "ledder") sprite.PlayAnim("ledder", 180, false);
+                    sprite.Pause();
                 }
             } else if(!collide.bottom) {
                 if(currentAnim != "jump") sprite.PlayAnim("jump", 180, false);

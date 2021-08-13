@@ -5,13 +5,14 @@ export class Sprite extends Drawable {
         super(params);
         this._anims = {};
         this._currentAnim = null;
+        this._paused = true;
         this._framePos = {x: 0, y: 0};
     }
     AddAnim(n, frames) {
         this._anims[n] = frames;
     }
     PlayAnim(n, rate, repeat, OnEnd) {
-        this._playing = true;
+        this._paused = false;
         this._currentAnim = {
             name: n,
             rate: rate,
@@ -21,8 +22,16 @@ export class Sprite extends Drawable {
             counter: rate
         };
     }
+    Pause() {
+        this._paused = true;
+    }
+    Resume() {
+        if(this._currentAnim) {
+            this._paused = false;
+        }
+    }
     Update(timeElapsed) {
-        if(!this._currentAnim) {
+        if(!this._paused) {
             return;
         }
         const currentAnim = this._currentAnim;
@@ -38,6 +47,7 @@ export class Sprite extends Drawable {
                 }
                 if(!currentAnim.repeat) {
                     this._currentAnim = null;
+                    this._paused = true;
                 }
             }
         }

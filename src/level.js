@@ -45,10 +45,7 @@ export class Level extends Scene {
                 sprite.AddAnim("jump", [
                     {x: 0, y: 1}
                 ]);
-                sprite.AddAnim("ledder-idle", [
-                    {x: 4, y: 0}
-                ]);
-                sprite.AddAnim("ledder-climb", [
+                sprite.AddAnim("ledder", [
                     {x: 4, y: 0}, {x: 4, y: 1}
                 ]);
                 e.AddComponent(sprite, "drawobj");
