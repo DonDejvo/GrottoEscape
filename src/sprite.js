@@ -31,7 +31,7 @@ export class Sprite extends Drawable {
         }
     }
     Update(timeElapsed) {
-        if(!this._paused) {
+        if(this._paused) {
             return;
         }
         const currentAnim = this._currentAnim;
