@@ -41,18 +41,18 @@ export class Renderer {
         this._context.translate(-scene._camera._pos.x * scene._camera._scale + this._width / 2, -scene._camera._pos.y * scene._camera._scale + this._height / 2);
         this._context.scale(scene._camera._scale, scene._camera._scale);
         for(let elem of scene._drawable) {
-            /*const pos = elem._pos.Clone();
+            const pos = elem._pos.Clone();
             pos.Sub(scene._camera._pos);
-            //pos.Mult(scene._camera._scale);
-            const [width, height] = [elem._width, elem._height]//.map((_) => _ * scene._camera._scale);
+            pos.Mult(scene._camera._scale);
+            const [width, height] = [elem._width, elem._height].map((_) => _ * scene._camera._scale);
             if(
-                pos.x + width / 2 < -this._width / 2 ||
-                pos.x - width / 2 > this._width / 2 ||
-                pos.y + height / 2 < -this._height / 2 ||
-                pos.y - height / 2 > this._height / 2
+                pos.x + width / 2 < -this._width * 0.5 ||
+                pos.x - width / 2 > this._width * 0.5 ||
+                pos.y + height / 2 < -this._height * 0.5 ||
+                pos.y - height / 2 > this._height * 0.5
             ) {
                 continue;
-            }*/
+            }
             elem.Draw(this._context);
         }
         this._context.restore();

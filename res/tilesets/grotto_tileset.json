@@ -846,7 +846,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -1125,7 +1125,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -1391,7 +1391,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -1657,7 +1657,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -1898,6 +1898,16 @@
                  "value":true
                 }, 
                 {
+                 "name":"end",
+                 "type":"float",
+                 "value":0.5
+                }, 
+                {
+                 "name":"start",
+                 "type":"float",
+                 "value":0
+                }, 
+                {
                  "name":"type",
                  "type":"string",
                  "value":"stairs"
@@ -1910,6 +1920,16 @@
                  "name":"collide",
                  "type":"bool",
                  "value":true
+                }, 
+                {
+                 "name":"end",
+                 "type":"float",
+                 "value":1
+                }, 
+                {
+                 "name":"start",
+                 "type":"float",
+                 "value":0.5
                 }, 
                 {
                  "name":"type",
@@ -1926,6 +1946,16 @@
                  "value":true
                 }, 
                 {
+                 "name":"end",
+                 "type":"float",
+                 "value":0.5
+                }, 
+                {
+                 "name":"start",
+                 "type":"float",
+                 "value":1
+                }, 
+                {
                  "name":"type",
                  "type":"string",
                  "value":"stairs"
@@ -1940,6 +1970,16 @@
                  "value":true
                 }, 
                 {
+                 "name":"end",
+                 "type":"float",
+                 "value":0
+                }, 
+                {
+                 "name":"start",
+                 "type":"float",
+                 "value":0.5
+                }, 
+                {
                  "name":"type",
                  "type":"string",
                  "value":"stairs"
@@ -1951,7 +1991,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -1965,7 +2005,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -1979,7 +2019,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -1993,7 +2033,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -3321,7 +3361,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -3587,7 +3627,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -3853,7 +3893,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",
@@ -4119,7 +4159,7 @@
                 {
                  "name":"collide",
                  "type":"bool",
-                 "value":true
+                 "value":false
                 }, 
                 {
                  "name":"type",

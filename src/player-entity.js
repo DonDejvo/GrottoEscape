@@ -1,5 +1,6 @@
 import { entity } from "./entity.js";
 import { physics } from "./physics.js";
+import { Vector } from "./vector.js";
 
 export const player_entity = (() => {
 
@@ -14,34 +15,69 @@ export const player_entity = (() => {
             const input = this.GetComponent("Input");
             const sprite = this.GetComponent("drawobj");
 
-            const result = gridController.FindNearby(body._width, body._height);
-            const tiles = result.filter(client => client.entity.groupList.has("block"));
-            const ledder = result.filter(client => client.entity.groupList.has("ledder"))
-                .some(client => physics.DetectCollision(body, client.entity.GetComponent("body")));
+            const result = gridController.FindNearby(body._width * 2, body._height * 2);
+            const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("stairs"));
+            const ledders = result.filter(client => client.entity.groupList.has("ledder"));
+
+            let ledders1 = ledders.filter(client => physics.DetectCollision(body, client.entity.GetComponent("body")));
+            const collide = {
+                left: body._collide.left.size > 0,
+                right: body._collide.right.size > 0,
+                top: body._collide.top.size > 0,
+                bottom: body._collide.bottom.size > 0
+            };
+
+            if(collide.left || collide.right) {
+                body._vel.x = 0;
+            }
+            if(collide.top || collide.bottom) {
+                body._vel.y = 0;
+            }
+
+            const currentAnim = sprite.currentAnim;
+
+            if(this._climbing) {
+                if(input._keys.up || input._keys.down) {
+                    if(currentAnim != "ledder-climb") sprite.PlayAnim("ledder-climb", 180, true);
+                } else {
+                    if(currentAnim != "ledder-idle") sprite.PlayAnim("ledder-idle", 180, false);
+                }
+            } else if(!collide.bottom) {
+                if(currentAnim != "jump") sprite.PlayAnim("jump", 180, false);
+            } else {
+                if(Math.abs(body._vel.x) > 70) {
+                    if(currentAnim != "run") sprite.PlayAnim("run", 180, true);
+                } else {
+                    if(currentAnim != "idle") sprite.PlayAnim("idle", 180, false);
+                }
+            }
 
             if(input._keys.right) {
-                if(!body._collide.right) body._vel.x += 720 * elapsedTimeS;
+                if(!collide.right) body._vel.x += 20; //860 * elapsedTimeS;
                 sprite._flip.x = false;
+                this._climbing = false;
             }
             if(input._keys.left) {
-                if(!body._collide.left) body._vel.x -= 720 * elapsedTimeS;
+                if(!collide.left) body._vel.x -= 20; //860 * elapsedTimeS;
                 sprite._flip.x = true;
-            }
-            if((body._collide.bottom || this._climbing) && input._keys.jump) {
                 this._climbing = false;
-                if(!body._collide.top) body._vel.y = -330;
+            }
+            if((collide.bottom || this._climbing) && input._keys.jump) {
+                this._climbing = false;
+                if(!collide.top) body._vel.y = -390; //-22000 * elapsedTimeS;
             }
 
-            if(((this._climbing && !body._collide.bottom) || (!this._climbing && (input._keys.up || input._keys.down))) && ledder) {
+            if(((this._climbing && !collide.bottom) || (!this._climbing && (input._keys.up || input._keys.down))) && ledders1.length > 0) {
                 this._climbing = true;
-                if(input._keys.up) body._vel.y = -80;
-                else if(input._keys.down) body._vel.y = 80;
+                body._pos.x = ledders1[0].entity._pos.x;
+                if(input._keys.up) body._vel.y = -120; //-8000 * elapsedTimeS;
+                else if(input._keys.down) body._vel.y = 120; //8000 * elapsedTimeS;
                 else body._vel.y = 0;
-            } else if(body._collide.bottom || !ledder) {
+            } else if(collide.bottom || ledders1.length == 0) {
                 this._climbing = false;
             }
 
-            if(!this._climbing) body._vel.y += physics.GRAVITY * elapsedTimeS;
+            if(!this._climbing) body._vel.y += 550 * elapsedTimeS; //* elapsedTimeS;
 
             body._oldPos.Copy(body._pos);
             body._vel.x *= (1 - body._friction.x);
@@ -49,30 +85,28 @@ export const player_entity = (() => {
             const vel = body._vel.Clone();
             vel.Mult(elapsedTimeS);
             body._pos.Add(vel);
+            if(Array.from(body._collide.bottom).filter(platform => platform._parent && platform._parent.groupList.has("stairs")).length) {
+                body._pos.y += Math.abs(body._vel.x * elapsedTimeS);
+            }
 
-            body._collide.left = body._collide.right = body._collide.top = body._collide.bottom = null;
+            body._collide.left.clear();
+            body._collide.right.clear();
+            body._collide.top.clear();
+            body._collide.bottom.clear();
 
             for(let client of tiles) {
                 physics.ResolveCollision(body, client.entity.GetComponent("body"));
             }
 
-            if(body._collide.left || body._collide.right) {
-                body._vel.x = 0;
-            }
-            if(body._collide.top || body._collide.bottom) {
-                body._vel.y = 0;
-            }
+            let ledders2 = ledders.filter(client => physics.DetectCollision(body, client.entity.GetComponent("body")));
 
-            const currentAnim = sprite.currentAnim;
-
-            if(!body._collide.bottom) {
-                if(currentAnim != "jump") sprite.PlayAnim("jump", 200, false);
-            } else {
-                if(Math.abs(body._vel.x) > 50) {
-                    if(currentAnim != "run") sprite.PlayAnim("run", 200, true);
-                } else {
-                    if(currentAnim != "idle") sprite.PlayAnim("idle", 200, false);
-                }
+            if(ledders2.length == 1) {
+                 const ledder =  ledders2[0].entity.GetComponent("body");
+                 if(body.bottom >= ledder.top && body._oldPos.y + body._height / 2 <= ledder.top && !input._keys.down) {
+                     body._pos.y = ledder.top - body._height / 2 - 0.001;
+                     this._climbing = false;
+                     body._collide.bottom.add(ledder);
+                 }
             }
 
         }
@@ -99,12 +133,12 @@ export const player_entity = (() => {
                 up: false,
                 down: false,
             };
-            
-            if(joystick.rangeX > 0.5) {
+            if(joystick.range >= 0.25) {
+            if(joystick.rangeX >= joystick.rangeY) {
                 joystick._vec.x < 0 ? joystickState.left = true : joystickState.right = true;
-            }
-            if(joystick.rangeY > 0.5) {
+            } else {
                 joystick._vec.y < 0 ? joystickState.up = true : joystickState.down = true;
+            }
             }
             this._keys.left = (joystickState.left || this._params.keyboard.IsPressed("a"));
             this._keys.right = (joystickState.right || this._params.keyboard.IsPressed("d"));

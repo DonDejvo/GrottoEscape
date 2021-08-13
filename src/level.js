@@ -45,11 +45,17 @@ export class Level extends Scene {
                 sprite.AddAnim("jump", [
                     {x: 0, y: 1}
                 ]);
+                sprite.AddAnim("ledder-idle", [
+                    {x: 4, y: 0}
+                ]);
+                sprite.AddAnim("ledder-climb", [
+                    {x: 4, y: 0}, {x: 4, y: 1}
+                ]);
                 e.AddComponent(sprite, "drawobj");
 
                 const body = new physics.Box({
-                    width: tileWidth * 0.8,
-                    height: tileHeight,
+                    width: tileWidth * 0.72,
+                    height: tileHeight * 0.96,
                     frictionX: 0.08,
                     frictionY: 0.01
                 });
@@ -134,13 +140,20 @@ export class Level extends Scene {
                             height: tileHeight
                         });
                         elem.AddComponent(body, "body");
-                        const gridController = new spatial_hash_grid.SpatialGridController({
-                            grid: this._grid,
-                            width: body._width,
-                            height: body._height
+                    } else if(tilesetObj.props.type == "stairs") {
+                        elem.groupList.add(tilesetObj.props.type);
+                        const body = new physics.Line({
+                            start: {x: -tileWidth / 2, y: (0.5 - tilesetObj.props.start) * tileHeight},
+                            end: {x: tileWidth / 2, y: (0.5 - tilesetObj.props.end) * tileHeight}
                         });
-                        elem.AddComponent(gridController);
+                        elem.AddComponent(body, "body");
                     }
+                    const gridController = new spatial_hash_grid.SpatialGridController({
+                        grid: this._grid,
+                        width: tileWidth,
+                        height: tileHeight
+                    });
+                    elem.AddComponent(gridController);
                 }
                 /*if(tilesetObj?.props?.collideType) {
                     const body = new physics.Box({

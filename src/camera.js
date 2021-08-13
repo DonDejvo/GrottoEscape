@@ -32,8 +32,12 @@ export class Camera {
     }
     Update(elapsedTimeS) {
         if(this._target) {
-            const t = 4 * elapsedTimeS;
-            this._pos.Lerp(this._target._pos, t);
+            if(Vector.Dist(this._pos, this._target._pos) < 1) {
+                this._pos.Copy(this._target._pos);
+            } else {
+                const t = 4 * elapsedTimeS;
+                this._pos.Lerp(this._target._pos, t);
+            }
         } else {
             const vel = this._vel.Clone();
             vel.Mult(elapsedTimeS);

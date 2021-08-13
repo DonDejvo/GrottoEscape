@@ -125,7 +125,7 @@ class Game {
         document.querySelector("#game-controls").style.visibility = "hidden";
 
         this._renderer = new Renderer(480, 720, document.querySelector(".gameContainer"), document.getElementById("game"));
-        this._renderer.SetBgColor("#021721");
+        this._renderer.SetBgColor("rgb(2,17,27)");
 
         this._eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
 

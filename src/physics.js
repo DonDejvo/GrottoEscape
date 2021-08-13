@@ -12,14 +12,13 @@ export const physics = (() => {
                 x: (this._params.frictionX || 0),
                 y: (this._params.frictionY || 0)
             };
-            this._collide = {left: null, right: null, top: null, bottom: null};
-            this._oldCollide = {left: null, right: null, top: null, bottom: null};
+            this._collide = {left: new Set(), right: new Set(), top: new Set(), bottom: new Set()};
         }
         InitComponent() {
             this._pos = this._parent._pos;
             this._oldPos = this._pos.Clone();
         }
-        Update(elapsedTimeS) {
+        Update(_) {
             
         }
     }
@@ -29,6 +28,18 @@ export const physics = (() => {
             super(params);
             this._width = params.width;
             this._height = params.height;
+        }
+        get left() {
+            return this._pos.x - this._width / 2;
+        }
+        get right() {
+            return this._pos.x + this._width / 2;
+        }
+        get top() {
+            return this._pos.y - this._height / 2;
+        }
+        get bottom() {
+            return this._pos.y + this._height / 2;
         }
     }
 
@@ -40,9 +51,17 @@ export const physics = (() => {
             this._width = Math.abs(this._start.x - this._end.x);
             this._height = Math.abs(this._start.y - this._end.y);
         }
+        InitComponent() {
+            super.InitComponent();
+            this._start.Add(this._pos);
+            this._end.Add(this._pos);
+        }
+        Update(_) {
+            
+        }
     }
 
-    const GRAVITY = 400;
+    const GRAVITY = 10;
 
     const ResolveCollision = (mover, platform) => {
         switch(platform.constructor.name) {
@@ -57,72 +76,72 @@ export const physics = (() => {
 
     const ResolveCollisionBox = (mover, platform) => {
 
-        const Collide = (a1, a2, d1, d2) => {
-            return Math.abs(a1 - a2) < (d1 + d2) / 2;
-        }
+        const vec = mover._pos.Clone().Sub(mover._oldPos);
+        
+        let collided = false;
 
-        let x1, x2, y1, y2;
-        x1 = x2 = mover._pos.x;
-        y1 = y2 = mover._pos.y;
-
-        if(
-            Collide(mover._pos.x, platform._pos.x, mover._width, platform._width) && 
-            Collide(mover._oldPos.y, platform._pos.y, mover._height, platform._height)
-        ) {
-            if(mover._vel.x > 0 && mover._oldPos.x + mover._width / 2 <= platform._pos.x - platform._width / 2) {
-                x1 = platform._pos.x - (mover._width + platform._width) / 2;
-            } else if(mover._vel.x < 0 && mover._oldPos.x - mover._width / 2 >= platform._pos.x + platform._width / 2) {
-                x1 = platform._pos.x + (mover._width + platform._width) / 2;
+        if(vec.y != 0) {
+            let y;
+            y = (vec.y > 0 ? platform.top - mover._height / 2 : platform.bottom + mover._height / 2);
+        
+            let a = vec.y / (y - mover._oldPos.y);
+            if(a >= 1) {
+                collided = true;
+                let x = vec.x / a + mover._oldPos.x;
+                if(Math.abs(x - platform._pos.x) < (mover._width + platform._width) / 2) {
+                    if(vec.y > 0) {
+                        mover._pos.y = y - 0.001;
+                        mover._collide.bottom.add(platform);
+                    } else {
+                        mover._pos.y = y + 0.001;
+                        mover._collide.top.add(platform);
+                    }
+                }
             }
         }
+        if(!collided && vec.x != 0) {
+            let x;
+            x = (vec.x > 0 ? platform.left - mover._width / 2 : platform.right + mover._width / 2);
 
-        if(
-            Collide(mover._oldPos.x, platform._pos.x, mover._width, platform._width) && 
-            Collide(mover._pos.y, platform._pos.y, mover._height, platform._height)
-        ) {
-            if(mover._vel.y > 0 && mover._oldPos.y + mover._height / 2 <= platform._pos.y - platform._height / 2) {
-                y1 = platform._pos.y - (mover._height + platform._height) / 2;
-            } else if(mover._vel.y < 0 && mover._oldPos.y - mover._height / 2 >= platform._pos.y + platform._height / 2) {
-                y1 = platform._pos.y + (mover._height + platform._height) / 2;
-            }
-        }
-
-        if(
-            Collide(mover._pos.x, platform._pos.x, mover._width, platform._width) && 
-            Collide(mover._pos.y, platform._pos.y, mover._height, platform._height)
-        ) {
-            if(mover._vel.x > 0) {
-                x2 = platform._pos.x - (mover._width + platform._width) / 2;
-            } else if(mover._vel.x < 0) {
-                x2 = platform._pos.x + (mover._width + platform._width) / 2;
-            }
-            if(mover._vel.y > 0) {
-                y2 = platform._pos.y - (mover._height + platform._height) / 2;
-            } else if(mover._vel.y < 0) {
-                y2 = platform._pos.y + (mover._height + platform._height) / 2;
+            let a = vec.x / (x - mover._oldPos.x);
+            if(a >= 1) {
+                let y = vec.y / a + mover._oldPos.y;
+                if(Math.abs(y - platform._pos.y) < (mover._height + platform._height) / 2) {
+                    if(vec.x > 0) {
+                        mover._pos.x = x - 0.001;
+                        mover._collide.right.add(platform);
+                    } else {
+                        mover._pos.x = x + 0.001;
+                        mover._collide.left.add(platform);
+                    }
+                }
             }
         }
 
-        if(x1 == x2 && x1 != mover._pos.x) {
-            mover._pos.x = x1;
-            if(mover._vel.x > 0) {
-                mover._collide.right = platform;
-            } else {
-                mover._collide.left = platform;
-            }
-        }
-        if(y1 == y2 && y1 != mover._pos.y) {
-            mover._pos.y = y1;
-            if(mover._vel.y > 0) {
-                mover._collide.bottom = platform;
-            } else {
-                mover._collide.top = platform;
-            }
-        }
+        
     };
 
     const ResolveCollisionLine = (mover, platform) => {
-        // Stuff here
+        if(
+            (mover._pos.x + mover._width / 2 - platform._start.x) * (mover._pos.x - mover._width / 2 - platform._end.x) > 0 ||
+            (mover._pos.y + mover._height / 2 - Math.min(platform._start.y, platform._end.y)) * (mover._pos.y - mover._height / 2 - Math.max(platform._start.y, platform._end.y)) > 0
+        ) {
+            return;
+        }
+        
+        const f = (x) => {
+            return platform._start.y + x / platform._width * (platform._end.y - platform._start.y);
+        };
+        const leftBottom = Math.max(mover._pos.x - mover._width / 2 - platform._start.x, 0);
+        const rightBottom = Math.min(mover._pos.x + mover._width / 2 - platform._start.x, platform._width);
+
+        const minY = Math.min(f(leftBottom), f(rightBottom));
+        const dy = minY - mover._pos.y;
+        if(dy > mover._height / 2) {
+            return;
+        }
+        mover._pos.y -= mover._height / 2 - dy;
+        mover._collide.bottom.add(platform);
     };
 
     const DetectCollision = (body1, body2) => {
