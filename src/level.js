@@ -1,3 +1,4 @@
+import { enemy_entity } from "./enemy-entity.js";
 import { entity } from "./entity.js";
 import { physics } from "./physics.js";
 import { player_entity } from "./player-entity.js";
@@ -108,6 +109,8 @@ export class Level extends Scene {
                     height: body._height
                 });
                 e.AddComponent(gridController);
+
+                e.AddComponent(new enemy_entity.BatController());
             }
 
             const InitSlime = (e) => {
@@ -131,6 +134,7 @@ export class Level extends Scene {
                 const body = new physics.Box({
                     width: tileWidth * 1,
                     height: tileHeight * 1,
+                    frictionY: 0.01
                 });
                 e.AddComponent(body, "body");
 
@@ -140,6 +144,8 @@ export class Level extends Scene {
                     height: body._height
                 });
                 e.AddComponent(gridController);
+
+                e.AddComponent(new enemy_entity.SlimeController());
             }
 
             const InitLizard = (e) => {
@@ -166,6 +172,7 @@ export class Level extends Scene {
                 const body = new physics.Box({
                     width: tileWidth * 1,
                     height: tileHeight * 1,
+                    frictionY: 0.01
                 });
                 e.AddComponent(body, "body");
 
@@ -175,6 +182,8 @@ export class Level extends Scene {
                     height: body._height
                 });
                 e.AddComponent(gridController);
+
+                e.AddComponent(new enemy_entity.LizardController());
             }
 
             const InitSkeleton = (e) => {
@@ -192,12 +201,16 @@ export class Level extends Scene {
                 sprite.AddAnim("run", [
                     {x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}
                 ]);
-                sprite.PlayAnim("run", 180, true);
+                sprite.AddAnim("attack", [
+                    {x: 4, y: 0}, {x: 5, y: 0}
+                ]);
                 e.AddComponent(sprite);
 
                 const body = new physics.Box({
                     width: tileWidth * 1,
                     height: tileHeight * 1,
+                    frictionX: 0.08,
+                    frictionY: 0.01
                 });
                 e.AddComponent(body, "body");
 
@@ -207,6 +220,8 @@ export class Level extends Scene {
                     height: body._height
                 });
                 e.AddComponent(gridController);
+
+                e.AddComponent(new enemy_entity.SkeletonController());
             }
 
             for(let obj of layer.objects) {

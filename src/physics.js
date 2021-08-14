@@ -7,6 +7,8 @@ export const physics = (() => {
         constructor(params) {
             super();
             this._params = params;
+            this._pos = new Vector(0, 0);
+            this._oldPos = new Vector(0, 0);
             this._vel = new Vector(0, 0);
             this._friction = {
                 x: (this._params.frictionX || 0),
@@ -17,6 +19,10 @@ export const physics = (() => {
         InitComponent() {
             this._pos = this._parent._pos;
             this._oldPos = this._pos.Clone();
+        }
+        SetPosition(p) {
+            this._pos.Copy(p);
+            this._oldPos.Copy(p);
         }
         Update(_) {
             
@@ -61,7 +67,7 @@ export const physics = (() => {
         }
     }
 
-    const GRAVITY = 10;
+    const GRAVITY = 550;
 
     const ResolveCollision = (mover, platform) => {
         switch(platform.constructor.name) {

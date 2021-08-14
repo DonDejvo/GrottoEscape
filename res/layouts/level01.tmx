@@ -45,19 +45,19 @@
 </data>
  </layer>
  <objectgroup id="5" name="entities">
-  <object id="1" name="player" x="30.5" y="187.5">
+  <object id="1" name="player" x="808.5" y="76">
    <point/>
   </object>
-  <object id="2" name="bat" x="87" y="187">
+  <object id="2" name="bat" x="697.5" y="61">
    <point/>
   </object>
-  <object id="3" name="slime" x="123" y="185.5">
+  <object id="3" name="slime" x="824" y="172.5">
    <point/>
   </object>
-  <object id="4" name="lizard" x="157.5" y="187">
+  <object id="4" name="lizard" x="1214.5" y="110.5">
    <point/>
   </object>
-  <object id="5" name="skeleton" x="58.5" y="187.5">
+  <object id="5" name="skeleton" x="848" y="172">
    <point/>
   </object>
  </objectgroup>
