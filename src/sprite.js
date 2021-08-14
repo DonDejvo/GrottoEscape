@@ -13,14 +13,16 @@ export class Sprite extends Drawable {
     }
     PlayAnim(n, rate, repeat, OnEnd) {
         this._paused = false;
-        this._currentAnim = {
+        const currentAnim = {
             name: n,
             rate: rate,
             repeat: repeat,
             OnEnd: OnEnd,
             frame: 0,
-            counter: rate
-        };
+            counter: 0
+        }
+        this._currentAnim = currentAnim;
+        this._framePos = this._anims[currentAnim.name][currentAnim.frame];
     }
     Pause() {
         this._paused = true;
@@ -37,7 +39,6 @@ export class Sprite extends Drawable {
         const currentAnim = this._currentAnim;
         currentAnim.counter += timeElapsed * 1000;
         if(currentAnim.counter >= currentAnim.rate) {
-            this._framePos = this._anims[currentAnim.name][currentAnim.frame];
             currentAnim.counter = 0;
             ++currentAnim.frame;
             if(currentAnim.frame >= this._anims[currentAnim.name].length) {
@@ -50,6 +51,7 @@ export class Sprite extends Drawable {
                     this._paused = true;
                 }
             }
+            this._framePos = this._anims[currentAnim.name][currentAnim.frame];
         }
     }
     get currentAnim() {

@@ -48,6 +48,9 @@ export class Level extends Scene {
                 sprite.AddAnim("ledder", [
                     {x: 4, y: 0}, {x: 4, y: 1}
                 ]);
+                sprite.AddAnim("shoot", [
+                    {x: 3, y: 0}
+                ]);
                 e.AddComponent(sprite, "drawobj");
 
                 const body = new physics.Box({
@@ -68,7 +71,8 @@ export class Level extends Scene {
                 e.AddComponent(new player_entity.Input({
                     keyboard: this._input.keyboard,
                     joystick: this._input.joystick,
-                    jumpButton: this._input.jumpButton
+                    jumpButton: this._input.jumpButton,
+                    shootButton: this._input.shootButton
                 }))
             }
 

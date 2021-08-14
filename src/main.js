@@ -136,7 +136,8 @@ class Game {
         this._input = {
             keyboard: new input.Keyboard(),
             joystick: new input.Joystick(document.getElementById("joystick")),
-            jumpButton: new input.Button(document.getElementById("jump-btn"))
+            jumpButton: new input.Button(document.getElementById("jump-btn")),
+            shootButton: new input.Button(document.getElementById("shoot-btn")),
         };
 
         this._renderer._container.addEventListener(this._eventByDevice, () => {

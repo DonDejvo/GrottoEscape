@@ -8,6 +8,7 @@ export const player_entity = (() => {
         constructor() {
             super();
             this._climbing = false;
+            this._shooting = false;
         }
         Update(elapsedTimeS) {
             const body = this.GetComponent("body");
@@ -36,7 +37,11 @@ export const player_entity = (() => {
 
             const currentAnim = sprite.currentAnim;
 
-            if(this._climbing && !collide.bottom) {
+            if(this._shooting) {
+                if(currentAnim != "shoot") sprite.PlayAnim("shoot", 540, false, () => {
+                    this._shooting = false;
+                });
+            } else if(this._climbing && !collide.bottom) {
                 if(input._keys.up || input._keys.down) {
                     if(currentAnim != "ledder") sprite.PlayAnim("ledder", 180, true);
                     sprite.Resume();
@@ -54,29 +59,38 @@ export const player_entity = (() => {
                 }
             }
 
-            if(input._keys.right) {
-                if(!collide.right) body._vel.x += 20; //860 * elapsedTimeS;
-                sprite._flip.x = false;
-                this._climbing = false;
-            }
-            if(input._keys.left) {
-                if(!collide.left) body._vel.x -= 20; //860 * elapsedTimeS;
-                sprite._flip.x = true;
-                this._climbing = false;
-            }
-            if((collide.bottom || this._climbing) && input._keys.jump) {
-                this._climbing = false;
-                if(!collide.top) body._vel.y = -390; //-22000 * elapsedTimeS;
+            if(!this._shooting) {
+
+                if(input._keys.right) {
+                    if(!collide.right) body._vel.x += 20; //860 * elapsedTimeS;
+                    sprite._flip.x = false;
+                    this._climbing = false;
+                }
+                if(input._keys.left) {
+                    if(!collide.left) body._vel.x -= 20; //860 * elapsedTimeS;
+                    sprite._flip.x = true;
+                    this._climbing = false;
+                }
+                if((collide.bottom || this._climbing) && input._keys.jump) {
+                    this._climbing = false;
+                    if(!collide.top) body._vel.y = -390; //-22000 * elapsedTimeS;
+                }
+    
+                if(((this._climbing && !collide.bottom) || (!this._climbing && (input._keys.up || input._keys.down))) && ledders1.length > 0) {
+                    this._climbing = true;
+                    body._pos.x = ledders1[0].entity._pos.x;
+                    if(input._keys.up) body._vel.y = -120; //-8000 * elapsedTimeS;
+                    else if(input._keys.down) body._vel.y = 120; //8000 * elapsedTimeS;
+                    else body._vel.y = 0;
+                } else if(collide.bottom || ledders1.length == 0) {
+                    this._climbing = false;
+                }
+
             }
 
-            if(((this._climbing && !collide.bottom) || (!this._climbing && (input._keys.up || input._keys.down))) && ledders1.length > 0) {
-                this._climbing = true;
-                body._pos.x = ledders1[0].entity._pos.x;
-                if(input._keys.up) body._vel.y = -120; //-8000 * elapsedTimeS;
-                else if(input._keys.down) body._vel.y = 120; //8000 * elapsedTimeS;
-                else body._vel.y = 0;
-            } else if(collide.bottom || ledders1.length == 0) {
-                this._climbing = false;
+            if(input._keys.shoot && collide.bottom && !this._shooting) {
+                this._shooting = true;
+                body._vel.x = 0;
             }
 
             if(!this._climbing) body._vel.y += 550 * elapsedTimeS; //* elapsedTimeS;
@@ -147,6 +161,7 @@ export const player_entity = (() => {
             this._keys.up = (joystickState.up || this._params.keyboard.IsPressed("w"));
             this._keys.down = (joystickState.down || this._params.keyboard.IsPressed("s"));
             this._keys.jump = (this._params.jumpButton.pressed || this._params.keyboard.IsPressed("k"));
+            this._keys.shoot = (this._params.shootButton.pressed || this._params.keyboard.IsPressed("l"));
         }
     }
 
