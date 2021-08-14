@@ -40,23 +40,20 @@ body {
     height: 130px;
     left: 40px;
     bottom: 40px;
-    background: blueviolet;
-    border-radius: 50%;
-}
-
-#joystick > img {
-    width: 100%;
-    height: 100%;
+    background-image: url("res/assets/png/joystick.png");
     image-rendering: crisp-edges;
-    pointer-events: none;
+    image-rendering: pixelated;
+    background-size: cover;
 }
 
 .controlButton {
     position: absolute;
     width: 70px;
     height: 70px;
-    background: radial-gradient(silver, grey);
-    border-radius: 50%;
+    background-image: url("res/assets/png/button.png");
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    background-size: cover;
     line-height: 70px;
     font-size: small;
     text-align: center;
@@ -247,4 +244,17 @@ body {
 
 .textbox-image > img {
     width: 100%;
+}
+
+#hpbar {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 112px;
+    height: 28px;
+    background-image: url("res/assets/png/meter.png");
+    background-attachment: fixed;
+    background-size: 112px 168px;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }

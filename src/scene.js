@@ -14,16 +14,18 @@ export class Scene {
     Add(e, n) {
         e._scene = this;
         this._entityManager.Add(e, n);
-        const drawobj = e.GetComponent("drawobj");
-        if(drawobj) {
-            this._AddDrawable(drawobj);
+        for(let k in e._components) {
+            if(e._components[k].Draw) {
+                this._AddDrawable(e._components[k]);
+            }
         }
     }
     Remove(e) {
         this._entityManager.Remove(e);
-        const drawobj = e.GetComponent("drawobj");
-        if(drawobj) {
-            this._RemoveDrawable(drawobj);
+        for(let k in e._components) {
+            if(e._components[k].Draw) {
+                this._RemoveDrawable(e._components[k]);
+            }
         }
     }
     Get(n) {

@@ -12,9 +12,6 @@ export class Drawable extends entity.Component {
             y: (this._params.flipY || false)
         };
     }
-    InitComponent() {
-        this._pos = this._parent._pos;
-    }
     SetSize(w, h) {
         this._width = w;
         this._height = h;

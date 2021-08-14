@@ -1,6 +1,7 @@
 import { entity } from "./entity.js";
 import { physics } from "./physics.js";
 import { Vector } from "./vector.js";
+import { Sprite } from "./sprite.js";
 
 export const player_entity = (() => {
 
@@ -14,7 +15,7 @@ export const player_entity = (() => {
             const body = this.GetComponent("body");
             const gridController = this.GetComponent("SpatialGridController");
             const input = this.GetComponent("Input");
-            const sprite = this.GetComponent("drawobj");
+            const sprite = this.GetComponent("Sprite");
 
             const result = gridController.FindNearby(body._width * 2, body._height * 2);
             const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("stairs"));
@@ -167,7 +168,7 @@ export const player_entity = (() => {
 
     return {
         Controller: Controller,
-        Input: Input
+        Input: Input,
     }
 
 })();

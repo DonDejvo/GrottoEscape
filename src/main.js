@@ -35,7 +35,7 @@ class Game {
             gameSpeed: 36,
             speedModifier: 1.0,
             image: this._resources["preview"]
-        }), "drawobj");
+        }));
         layer.SetPosition(new Vector(0, -256));
         this._menuScene.Add(layer);
         this._menuScene.Play();
@@ -65,7 +65,6 @@ class Game {
                     this._levelScene._camera.ScaleTo(1, 1200, "ease-out");
                 }, 0);
                 const player = this._levelScene.Get("player");
-                player.GetComponent("drawobj").PlayAnim("jump", 200, true);
                 this._levelScene._camera.Follow(player);
             }, 3000);
         });

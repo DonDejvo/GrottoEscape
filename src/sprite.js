@@ -8,6 +8,9 @@ export class Sprite extends Drawable {
         this._paused = true;
         this._framePos = {x: 0, y: 0};
     }
+    InitComponent() {
+        this._pos = this._parent._pos;
+    }
     AddAnim(n, frames) {
         this._anims[n] = frames;
     }

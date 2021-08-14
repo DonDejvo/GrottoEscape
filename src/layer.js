@@ -7,6 +7,9 @@ export class Layer extends Drawable {
         this._y = 0;
         this._gameSpeed = this._params.gameSpeed;
     }
+    InitComponent() {
+        this._pos = this._parent._pos;
+    }
     Update(elapsedTimeS) {
         this._x -= this._gameSpeed * this._params.speedModifier * elapsedTimeS;
         if(this._x < -this._width) {

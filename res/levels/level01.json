@@ -42,6 +42,54 @@
                  "width":0,
                  "x":30.5,
                  "y":187.5
+                }, 
+                {
+                 "height":0,
+                 "id":2,
+                 "name":"bat",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":87,
+                 "y":187
+                }, 
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"slime",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":123,
+                 "y":185.5
+                }, 
+                {
+                 "height":0,
+                 "id":4,
+                 "name":"lizard",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":157.5,
+                 "y":187
+                }, 
+                {
+                 "height":0,
+                 "id":5,
+                 "name":"skeleton",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":58.5,
+                 "y":187.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -74,7 +122,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":2,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.1",
