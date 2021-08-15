@@ -31,6 +31,9 @@ export class Scene {
     Get(n) {
         return this._entityManager.Get(n);
     }
+    Filter(cb) {
+        return this._entityManager.Filter(cb);
+    }
     _AddDrawable(e) {
         this._drawable.push(e);
         for(let i = this._drawable.length - 1; i > 0; --i) {

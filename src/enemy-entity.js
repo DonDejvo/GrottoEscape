@@ -1,6 +1,9 @@
 import { entity } from "./entity.js";
 import { physics } from "./physics.js";
+import { Sprite } from "./sprite.js";
 import { Vector } from "./vector.js";
+import { spatial_hash_grid } from "./spatial-hash-grid.js";
+import { bullet } from "./bullet.js";
 
 export const enemy_entity = (() => {
 
@@ -124,7 +127,6 @@ export const enemy_entity = (() => {
             super();
             this._movingRight = true;
             this._limits = {left: null, right: null};
-            this._attacking = false;
         }
         Update(elapsedTimeS) {
             const body = this.GetComponent("body");
@@ -161,58 +163,33 @@ export const enemy_entity = (() => {
             }
 
             const distToPlayer = Vector.Dist(body._pos, player._pos);
-            let following = false;
-            let movingRight = this._movingRight;
 
-            if(distToPlayer <= 30 || this._attacking) {
-                this._attacking = true;
-                movingRight = body._pos.x < player._pos.x;
-            } else
             if((this._limits.left === null || player._pos.x >= this._limits.left) && (this._limits.right === null || player._pos.x <= this._limits.right) && distToPlayer <= 200) {
-                movingRight = body._pos.x < player._pos.x;
-                following = true;
+                if(Math.abs(player._pos.x - body._pos.x) > 50) this._movingRight = body._pos.x < player._pos.x;
             } else if(Math.random() > 0.995) {
-                movingRight = movingRight;
+                this._movingRight = !this._movingRight;
             }
 
             if(collide.left || collide.right) {
                 body._vel.x = 0;
                 if(collide.right) {
                     this._limits.right = body._pos.x;
-                    movingRight = false;
+                    this._movingRight = false;
                 } else {
                     this._limits.left = body._pos.x;
-                    movingRight = true;
+                    this._movingRight = true;
                 }
             }
             if(collide.top || collide.bottom) {
                 body._vel.y = 0;
             }
 
-            const currentAnim = sprite.currentAnim;
-            if(this._attacking) {
-                if(currentAnim != "attack") sprite.PlayAnim("attack", 180, true, () => {
-                    this._attacking = false;
-                });
+            if(this._movingRight) {
+                body._vel.x = 100;
+                sprite._flip.x = false;
             } else {
-                if(currentAnim != "run") sprite.PlayAnim("run", 180, true);
-            }
-
-            if(!(following && Math.abs(player._pos.x - body._pos.x) < 50)) {
-                this._movingRight = movingRight;
-            }
-
-            if(this._attacking) {
-                body._vel.x = 0;
-                sprite._flip.x = !this._movingRight;
-            } else {
-                if(this._movingRight) {
-                    body._vel.x = 100;
-                    sprite._flip.x = false;
-                } else {
-                    body._vel.x = -100;
-                    sprite._flip.x = true;
-                }
+                body._vel.x = -100;
+                sprite._flip.x = true;
             }
 
             body._vel.y += 550 * elapsedTimeS;
@@ -270,8 +247,8 @@ export const enemy_entity = (() => {
             }
 
             this._counter += elapsedTimeS * 1000;
-            if(this._counter >= 1800) {
-                this._counter -= 1800;
+            if(this._counter >= 3000) {
+                this._counter -= 3000;
                 this._shooting = true;
             }
 
@@ -280,6 +257,7 @@ export const enemy_entity = (() => {
             if(this._shooting) {
                 if(currentAnim != "shoot") sprite.PlayAnim("shoot", 540, false, () => {
                     this._shooting = false;
+                    this._CreateFireball();
                 });
             } else {
                 if(currentAnim != "idle") sprite.PlayAnim("idle", 180, true);
@@ -287,7 +265,7 @@ export const enemy_entity = (() => {
 
             if(!this._shooting) {
                 this._lookingRight = player._pos.x >= body._pos.x;
-                sprite._flip.x = this._lookingRight;
+                sprite._flip.x = !this._lookingRight;
             }
 
             body._vel.y += 550 * elapsedTimeS;
@@ -307,13 +285,95 @@ export const enemy_entity = (() => {
             }
 
         }
+        _CreateFireball() {
+            const e = new entity.Entity();
+            e.groupList.add("fireball");
+
+            e.SetPosition(this.GetComponent("body")._pos);
+
+            const sprite = new Sprite({
+                zIndex: this.GetComponent("Sprite")._zIndex,
+                width: 48,
+                height: 48,
+                image: this._parent._scene._resources["items"],
+                frameWidth: 16,
+                frameHeight: 16,
+                flipX: !this._lookingRight
+            });
+            sprite.AddAnim("fly", [
+                {x: 0, y: 2}, {x: 1, y: 2}
+            ]);
+            sprite.AddAnim("explode", [
+                {x: 3, y: 2}, {x: 4, y: 2}
+            ]);
+            sprite.PlayAnim("fly", 180, true);
+            e.AddComponent(sprite);
+            this._parent._scene.Add(e);
+            const body = new physics.Box({
+                width: sprite._width * 0.6,
+                height: sprite._height * 0.4
+            });
+            body._vel.x = this._lookingRight ? 300 : -300;
+            e.AddComponent(body, "body");
+
+            const gridController = new spatial_hash_grid.SpatialGridController({
+                grid: this._parent._scene._grid,
+                width: body._width,
+                height: body._height
+            });
+            e.AddComponent(gridController);
+            e.AddComponent(new bullet.FireballController({
+                target: "player"
+            }));
+        }
+    }
+
+    class GhostController extends entity.Component {
+        constructor() {
+            super();
+        }
+        Update(elapsedTimeS) {
+            const body = this.GetComponent("body");
+            const gridController = this.GetComponent("SpatialGridController");
+            const sprite = this.GetComponent("Sprite");
+
+            const result = gridController.FindNearby(body._width * 2, body._height * 2);
+
+            const player = this.FindEntity("player").GetComponent("body");
+
+            const distToPlayer = Vector.Dist(player._pos, body._pos);
+
+            if(distToPlayer <= 300 && !physics.DetectCollision(player, body)) {
+                const vel = player._pos.Clone();
+                vel.Sub(body._pos);
+                vel.Unit();
+                vel.Mult(10);
+                body._vel.Add(vel);
+            }
+
+
+            if(body._vel.x > 0) {
+                sprite._flip.x = false;
+            } else {
+                sprite._flip.x = true;
+            }
+
+            body._oldPos.Copy(body._pos);
+            body._vel.x *= (1 - body._friction.x);
+            body._vel.y *= (1 - body._friction.y);
+            const vel = body._vel.Clone();
+            vel.Mult(elapsedTimeS);
+            body._pos.Add(vel);
+
+        }
     }
 
     return {
         BatController: BatController,
         SlimeController: SlimeController,
         SkeletonController: SkeletonController,
-        LizardController: LizardController
+        LizardController: LizardController,
+        GhostController: GhostController
     };
 
 })();

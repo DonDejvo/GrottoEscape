@@ -54,8 +54,6 @@ export const physics = (() => {
             super(params);
             this._start = new Vector(this._params.start.x, this._params.start.y);
             this._end = new Vector(this._params.end.x, this._params.end.y);
-            this._width = Math.abs(this._start.x - this._end.x);
-            this._height = Math.abs(this._start.y - this._end.y);
         }
         InitComponent() {
             super.InitComponent();
@@ -136,10 +134,10 @@ export const physics = (() => {
         }
         
         const f = (x) => {
-            return platform._start.y + x / platform._width * (platform._end.y - platform._start.y);
+            return platform._start.y + x / (platform._end.x - platform._start.x) * (platform._end.y - platform._start.y);
         };
         const leftBottom = Math.max(mover._pos.x - mover._width / 2 - platform._start.x, 0);
-        const rightBottom = Math.min(mover._pos.x + mover._width / 2 - platform._start.x, platform._width);
+        const rightBottom = Math.min(mover._pos.x + mover._width / 2 - platform._start.x, platform._end.x - platform._start.x);
 
         const minY = Math.min(f(leftBottom), f(rightBottom));
         const dy = minY - mover._pos.y;
@@ -153,6 +151,8 @@ export const physics = (() => {
     const DetectCollision = (body1, body2) => {
         if(body1.constructor.name == "Box" && body2.constructor.name == "Box") {
             return DetectCollisionBoxVsBox(body1, body2);
+        } else if(body1.constructor.name == "Box" && body2.constructor.name == "Line") {
+            return DetectCollisionBoxVsLine(body1, body2);
         }
         return false;
     };
@@ -160,6 +160,12 @@ export const physics = (() => {
     const DetectCollisionBoxVsBox = (body1, body2) => {
         return Math.abs(body1._pos.x - body2._pos.x) < (body1._width + body2._width) / 2 &&
         Math.abs(body1._pos.y - body2._pos.y) < (body1._height + body2._height) / 2;
+    }
+
+    const DetectCollisionBoxVsLine = (body1, body2) => {
+        const [minX, maxX] = body2._start.x < body2._end.x ? [body2._start.x, body2._end.x] : [body2._end.x, body2._start.x];
+        const [minY, maxY] = body2._start.y < body2._end.y ? [body2._start.y, body2._end.y] : [body2._end.y, body2._start.y];
+        return (body1.left - maxX) * (body1.right - minX) < 0 && (body1.top - maxY) * (body1.bottom - minY) < 0;
     }
 
     return {

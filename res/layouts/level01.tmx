@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.1" orientation="orthogonal" renderorder="right-down" width="94" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="6">
+<map version="1.5" tiledversion="1.7.1" orientation="orthogonal" renderorder="right-down" width="94" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="12">
  <editorsettings>
   <export target="../levels/level01.json" format="json"/>
  </editorsettings>
@@ -58,6 +58,24 @@
    <point/>
   </object>
   <object id="5" name="skeleton" x="848" y="172">
+   <point/>
+  </object>
+  <object id="6" name="ghost" x="913.5" y="75">
+   <point/>
+  </object>
+  <object id="7" name="crystal" x="1326" y="92.5">
+   <point/>
+  </object>
+  <object id="10" name="crystal" x="1305" y="92.5">
+   <point/>
+  </object>
+  <object id="11" name="crystal" x="1390" y="93">
+   <point/>
+  </object>
+  <object id="8" name="crystal" x="1348" y="91.5">
+   <point/>
+  </object>
+  <object id="9" name="crystal" x="1368" y="92">
    <point/>
   </object>
  </objectgroup>

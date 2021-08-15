@@ -21,14 +21,16 @@ export class Level extends Scene {
 
         const tilemap = this._params.tilemap;
         const tileset = this._params.tileset;
-        const tileWidth = this._params.tileWidth;
-        const tileHeight = this._params.tileHeight;
+        const tileWidth = 48;
+        const tileHeight = 48;
 
         this._grid = new spatial_hash_grid.SpatialHashGrid([[0, 0], [tileWidth * tilemap.width, tileHeight * tilemap.height]], [Math.floor(tilemap.width / 2), Math.floor(tilemap.height / 2)])
 
         const HandleObjectgroup = (layer, zIndex) => {
             
             const InitPlayer = (e) => {
+                e.groupList.add("player");
+
                 const sprite = new Sprite({
                     width: tileWidth,
                     height: tileHeight,
@@ -133,7 +135,7 @@ export class Level extends Scene {
 
                 const body = new physics.Box({
                     width: tileWidth * 1,
-                    height: tileHeight * 1,
+                    height: tileHeight * 0.8,
                     frictionY: 0.01
                 });
                 e.AddComponent(body, "body");
@@ -201,14 +203,12 @@ export class Level extends Scene {
                 sprite.AddAnim("run", [
                     {x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}
                 ]);
-                sprite.AddAnim("attack", [
-                    {x: 4, y: 0}, {x: 5, y: 0}
-                ]);
+                sprite.PlayAnim("run", 180, true);
                 e.AddComponent(sprite);
 
                 const body = new physics.Box({
-                    width: tileWidth * 1,
-                    height: tileHeight * 1,
+                    width: tileWidth * 0.8,
+                    height: tileHeight * 0.98,
                     frictionX: 0.08,
                     frictionY: 0.01
                 });
@@ -222,6 +222,74 @@ export class Level extends Scene {
                 e.AddComponent(gridController);
 
                 e.AddComponent(new enemy_entity.SkeletonController());
+            }
+
+            const InitGhost = (e) => {
+                e.groupList.add("enemy");
+                e.groupList.add("ghost");
+
+                const sprite = new Sprite({
+                    width: tileWidth,
+                    height: tileHeight,
+                    zIndex: zIndex,
+                    image: this._resources["ghost"],
+                    frameWidth: 16,
+                    frameHeight: 16
+                });
+                sprite.AddAnim("fly", [
+                    {x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}
+                ]);
+                sprite.PlayAnim("fly", 180, true);
+                e.AddComponent(sprite);
+
+                const body = new physics.Box({
+                    width: tileWidth * 0.8,
+                    height: tileHeight * 0.98,
+                    frictionX: 0.08,
+                    frictionY: 0.04
+                });
+                e.AddComponent(body, "body");
+
+                const gridController = new spatial_hash_grid.SpatialGridController({
+                    grid: this._grid,
+                    width: body._width,
+                    height: body._height
+                });
+                e.AddComponent(gridController);
+
+                e.AddComponent(new enemy_entity.GhostController());
+            }
+
+            const InitCrystal = (e) => {
+                e.groupList.add("item");
+                e.groupList.add("crystal");
+
+                const sprite = new Sprite({
+                    width: tileWidth,
+                    height: tileHeight,
+                    zIndex: zIndex,
+                    image: this._resources["items"],
+                    frameWidth: 16,
+                    frameHeight: 16
+                });
+                sprite.AddAnim("spin", [
+                    {x: 0, y: 1}, {x: 1, y: 1}, {x: 2, y: 1}, {x: 3, y: 1}
+                ]);
+                sprite.PlayAnim("spin", 180, true);
+                e.AddComponent(sprite);
+
+                const body = new physics.Box({
+                    width: tileWidth * 0.3,
+                    height: tileHeight * 0.5,
+                });
+                e.AddComponent(body, "body");
+
+                const gridController = new spatial_hash_grid.SpatialGridController({
+                    grid: this._grid,
+                    width: body._width,
+                    height: body._height
+                });
+                e.AddComponent(gridController);
             }
 
             for(let obj of layer.objects) {
@@ -246,6 +314,12 @@ export class Level extends Scene {
                         break;
                     case "skeleton":
                         InitSkeleton(elem);
+                        break;
+                    case "ghost":
+                        InitGhost(elem);
+                        break;
+                    case "crystal":
+                        InitCrystal(elem);
                         break;
                 }
                 

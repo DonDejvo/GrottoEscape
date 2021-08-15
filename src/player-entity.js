@@ -2,6 +2,8 @@ import { entity } from "./entity.js";
 import { physics } from "./physics.js";
 import { Vector } from "./vector.js";
 import { Sprite } from "./sprite.js";
+import { spatial_hash_grid } from "./spatial-hash-grid.js";
+import { bullet } from "./bullet.js";
 
 export const player_entity = (() => {
 
@@ -10,6 +12,7 @@ export const player_entity = (() => {
             super();
             this._climbing = false;
             this._shooting = false;
+            this._lookingRight = true;
         }
         Update(elapsedTimeS) {
             const body = this.GetComponent("body");
@@ -41,6 +44,7 @@ export const player_entity = (() => {
             if(this._shooting) {
                 if(currentAnim != "shoot") sprite.PlayAnim("shoot", 540, false, () => {
                     this._shooting = false;
+                    this._CreateFireball();
                 });
             } else if(this._climbing && !collide.bottom) {
                 if(input._keys.up || input._keys.down) {
@@ -65,11 +69,13 @@ export const player_entity = (() => {
                 if(input._keys.right) {
                     if(!collide.right) body._vel.x += 20; //860 * elapsedTimeS;
                     sprite._flip.x = false;
+                    this._lookingRight = true;
                     this._climbing = false;
                 }
                 if(input._keys.left) {
                     if(!collide.left) body._vel.x -= 20; //860 * elapsedTimeS;
                     sprite._flip.x = true;
+                    this._lookingRight = false;
                     this._climbing = false;
                 }
                 if((collide.bottom || this._climbing) && input._keys.jump) {
@@ -126,6 +132,47 @@ export const player_entity = (() => {
                  }
             }
 
+        }
+        _CreateFireball() {
+            const e = new entity.Entity();
+            e.groupList.add("fireball");
+
+            e.SetPosition(this.GetComponent("body")._pos);
+
+            const sprite = new Sprite({
+                zIndex: this.GetComponent("Sprite")._zIndex,
+                width: 48,
+                height: 48,
+                image: this._parent._scene._resources["items"],
+                frameWidth: 16,
+                frameHeight: 16,
+                flipX: !this._lookingRight
+            });
+            sprite.AddAnim("fly", [
+                {x: 0, y: 2}, {x: 1, y: 2}
+            ]);
+            sprite.AddAnim("explode", [
+                {x: 3, y: 2}, {x: 4, y: 2}
+            ]);
+            sprite.PlayAnim("fly", 180, true);
+            e.AddComponent(sprite);
+            this._parent._scene.Add(e);
+            const body = new physics.Box({
+                width: sprite._width * 0.6,
+                height: sprite._height * 0.4
+            });
+            body._vel.x = this._lookingRight ? 300 : -300;
+            e.AddComponent(body, "body");
+
+            const gridController = new spatial_hash_grid.SpatialGridController({
+                grid: this._parent._scene._grid,
+                width: body._width,
+                height: body._height
+            });
+            e.AddComponent(gridController);
+            e.AddComponent(new bullet.FireballController({
+                target: "enemy"
+            }));
         }
     }
 
