@@ -241,6 +241,9 @@ export const enemy_entity = (() => {
     class LizardController extends entity.Component {
         constructor() {
             super();
+            this._shooting = false;
+            this._counter = 0;
+            this._lookingRight = true;
         }
         Update(elapsedTimeS) {
             const body = this.GetComponent("body");
@@ -250,7 +253,7 @@ export const enemy_entity = (() => {
             const result = gridController.FindNearby(body._width * 4, body._height * 2);
             const tiles = result.filter(client => client.entity.groupList.has("block"));
 
-            const player = this.FindEntity("player");
+            const player = this.FindEntity("player").GetComponent("body");
 
             const collide = {
                 left: body._collide.left.size > 0,
@@ -266,7 +269,26 @@ export const enemy_entity = (() => {
                 body._vel.y = 0;
             }
 
+            this._counter += elapsedTimeS * 1000;
+            if(this._counter >= 1800) {
+                this._counter -= 1800;
+                this._shooting = true;
+            }
+
             const currentAnim = sprite.currentAnim;
+
+            if(this._shooting) {
+                if(currentAnim != "shoot") sprite.PlayAnim("shoot", 540, false, () => {
+                    this._shooting = false;
+                });
+            } else {
+                if(currentAnim != "idle") sprite.PlayAnim("idle", 180, true);
+            }
+
+            if(!this._shooting) {
+                this._lookingRight = player._pos.x >= body._pos.x;
+                sprite._flip.x = this._lookingRight;
+            }
 
             body._vel.y += 550 * elapsedTimeS;
 
