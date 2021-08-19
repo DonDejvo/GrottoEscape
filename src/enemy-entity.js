@@ -1,9 +1,9 @@
 import { entity } from "./entity.js";
 import { physics } from "./physics.js";
-import { Sprite } from "./sprite.js";
 import { Vector } from "./vector.js";
 import { spatial_hash_grid } from "./spatial-hash-grid.js";
 import { bullet } from "./bullet.js";
+import { drawable } from "./drawable.js";
 
 export const enemy_entity = (() => {
 
@@ -66,7 +66,8 @@ export const enemy_entity = (() => {
             const sprite = this.GetComponent("Sprite");
 
             const result = gridController.FindNearby(body._width * 4, body._height * 2);
-            const tiles = result.filter(client => client.entity.groupList.has("block"));
+            const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("platform"));
+            const ledders = result.filter(client => client.entity.groupList.has("ledder"));
 
             const collide = {
                 left: body._collide.left.size > 0,
@@ -119,6 +120,16 @@ export const enemy_entity = (() => {
                 physics.ResolveCollision(body, client.entity.GetComponent("body"));
             }
 
+            let ledders2 = ledders.filter(client => physics.DetectCollision(body, client.entity.GetComponent("body")));
+
+            if(ledders2.length == 1) {
+                 const ledder =  ledders2[0].entity.GetComponent("body");
+                 if(body.bottom >= ledder.top && body._oldPos.y + body._height / 2 <= ledder.top && !input._keys.down) {
+                     body._pos.y = ledder.top - body._height / 2 - 0.001;
+                     body._collide.bottom.add(ledder);
+                 }
+            }
+
         }
     }
 
@@ -134,7 +145,7 @@ export const enemy_entity = (() => {
             const sprite = this.GetComponent("Sprite");
 
             const result = gridController.FindNearby(body._width * 4, body._height * 2);
-            const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("stairs"));
+            const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("stairs") || client.entity.groupList.has("platform"));
 
             const player = this.FindEntity("player").GetComponent("body");
 
@@ -228,7 +239,7 @@ export const enemy_entity = (() => {
             const sprite = this.GetComponent("Sprite");
 
             const result = gridController.FindNearby(body._width * 4, body._height * 2);
-            const tiles = result.filter(client => client.entity.groupList.has("block"));
+            const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("platform"));
 
             const player = this.FindEntity("player").GetComponent("body");
 
@@ -274,6 +285,7 @@ export const enemy_entity = (() => {
             body._vel.y *= (1 - body._friction.y);
             const vel = body._vel.Clone();
             vel.Mult(elapsedTimeS);
+            body._pos.Add(vel);
 
             body._collide.left.clear();
             body._collide.right.clear();
@@ -291,7 +303,7 @@ export const enemy_entity = (() => {
 
             e.SetPosition(this.GetComponent("body")._pos);
 
-            const sprite = new Sprite({
+            const sprite = new drawable.Sprite({
                 zIndex: this.GetComponent("Sprite")._zIndex,
                 width: 48,
                 height: 48,
@@ -368,12 +380,44 @@ export const enemy_entity = (() => {
         }
     }
 
+    class LavaballController extends entity.Component {
+        constructor() {
+            super();
+        }
+        InitComponent() {
+            this._startPosY = this._parent._pos.y;
+        }
+        Update(elapsedTimeS) {
+            const body = this.GetComponent("body");
+            const gridController = this.GetComponent("SpatialGridController");
+            const sprite = this.GetComponent("Sprite");
+
+            if(body._pos.y > this._startPosY) {
+                body._pos.y = this._startPosY;
+                body._vel.y = -700;
+            }
+
+            body._vel.y += 550 * elapsedTimeS;
+
+            sprite._flip.y = body._vel.y > 0;
+
+            body._oldPos.Copy(body._pos);
+            body._vel.x *= (1 - body._friction.x);
+            body._vel.y *= (1 - body._friction.y);
+            const vel = body._vel.Clone();
+            vel.Mult(elapsedTimeS);
+            body._pos.Add(vel);
+
+        }
+    }
+
     return {
         BatController: BatController,
         SlimeController: SlimeController,
         SkeletonController: SkeletonController,
         LizardController: LizardController,
-        GhostController: GhostController
+        GhostController: GhostController,
+        LavaballController: LavaballController
     };
 
 })();

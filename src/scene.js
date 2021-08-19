@@ -8,8 +8,8 @@ export class Scene {
         this._drawable = [];
         this._camera = new Camera();
         this._paused = true;
-        this._eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
         this._resources = this._params.resources;
+        this._interactive = [];
     }
     Add(e, n) {
         e._scene = this;
@@ -62,4 +62,8 @@ export class Scene {
         this._entityManager.Update(elapsedTimeS);
         this._camera.Update(elapsedTimeS);
     }
+    SetInteractive(e) {
+        this._interactive.push(e);
+    }
+    OnClick() {}
 }

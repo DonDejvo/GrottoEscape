@@ -34,6 +34,9 @@ export class Renderer {
         this._bgColor = c;
     }
     Render(scene) {
+        if(!scene) {
+            return;
+        }
         this._context.beginPath();
         this._context.fillStyle = this._bgColor;
         this._context.fillRect(0, 0, this._width, this._height);

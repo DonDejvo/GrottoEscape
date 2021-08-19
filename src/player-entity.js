@@ -1,9 +1,9 @@
 import { entity } from "./entity.js";
 import { physics } from "./physics.js";
-import { Vector } from "./vector.js";
-import { Sprite } from "./sprite.js";
+import { drawable } from "./drawable.js";
 import { spatial_hash_grid } from "./spatial-hash-grid.js";
 import { bullet } from "./bullet.js";
+import { Vector } from "./vector.js";
 
 export const player_entity = (() => {
 
@@ -21,7 +21,8 @@ export const player_entity = (() => {
             const sprite = this.GetComponent("Sprite");
 
             const result = gridController.FindNearby(body._width * 2, body._height * 2);
-            const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("stairs"));
+            const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("stairs") || client.entity.groupList.has("platform"));
+            tiles.sort((a, b) => Vector.Dist(body._oldPos, a.entity._pos) - Vector.Dist(body._oldPos, b.entity._pos));
             const ledders = result.filter(client => client.entity.groupList.has("ledder"));
 
             let ledders1 = ledders.filter(client => physics.DetectCollision(body, client.entity.GetComponent("body")));
@@ -67,20 +68,20 @@ export const player_entity = (() => {
             if(!this._shooting) {
 
                 if(input._keys.right) {
-                    if(!collide.right) body._vel.x += 20; //860 * elapsedTimeS;
+                    /*if(!collide.right)*/ body._vel.x += 20; //860 * elapsedTimeS;
                     sprite._flip.x = false;
                     this._lookingRight = true;
                     this._climbing = false;
                 }
                 if(input._keys.left) {
-                    if(!collide.left) body._vel.x -= 20; //860 * elapsedTimeS;
+                    /*if(!collide.left)*/ body._vel.x -= 20; //860 * elapsedTimeS;
                     sprite._flip.x = true;
                     this._lookingRight = false;
                     this._climbing = false;
                 }
                 if((collide.bottom || this._climbing) && input._keys.jump) {
                     this._climbing = false;
-                    if(!collide.top) body._vel.y = -390; //-22000 * elapsedTimeS;
+                    /*if(!collide.top)*/ body._vel.y = -390; //-22000 * elapsedTimeS;
                 }
     
                 if(((this._climbing && !collide.bottom) || (!this._climbing && (input._keys.up || input._keys.down))) && ledders1.length > 0) {
@@ -139,7 +140,7 @@ export const player_entity = (() => {
 
             e.SetPosition(this.GetComponent("body")._pos);
 
-            const sprite = new Sprite({
+            const sprite = new drawable.Sprite({
                 zIndex: this.GetComponent("Sprite")._zIndex,
                 width: 48,
                 height: 48,
@@ -204,12 +205,12 @@ export const player_entity = (() => {
                 joystick._vec.y < 0 ? joystickState.up = true : joystickState.down = true;
             }
             }
-            this._keys.left = (joystickState.left || this._params.keyboard.IsPressed("a"));
-            this._keys.right = (joystickState.right || this._params.keyboard.IsPressed("d"));
-            this._keys.up = (joystickState.up || this._params.keyboard.IsPressed("w"));
-            this._keys.down = (joystickState.down || this._params.keyboard.IsPressed("s"));
-            this._keys.jump = (this._params.jumpButton.pressed || this._params.keyboard.IsPressed("k"));
-            this._keys.shoot = (this._params.shootButton.pressed || this._params.keyboard.IsPressed("l"));
+            this._keys.left = (joystickState.left || this._params.keyboard.IsPressed("KeyA"));
+            this._keys.right = (joystickState.right || this._params.keyboard.IsPressed("KeyD"));
+            this._keys.up = (joystickState.up || this._params.keyboard.IsPressed("KeyW"));
+            this._keys.down = (joystickState.down || this._params.keyboard.IsPressed("KeyS"));
+            this._keys.jump = (this._params.jumpButton.pressed || this._params.keyboard.IsPressed("KeyK"));
+            this._keys.shoot = (this._params.shootButton.pressed || this._params.keyboard.IsPressed("KeyL"));
         }
     }
 

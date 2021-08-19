@@ -65,14 +65,14 @@ export const input = (() => {
             });
         }
         _OnKeypress(e) {
-            this._keys.add(e.key);
+            this._keys.add(e.code);
             const ev = "keypress";
-            this._HandleListeners(e.key, ev);
+            this._HandleListeners(e.code, ev);
         }
         _OnKeyrelease(e) {
-            this._keys.delete(e.key);
+            this._keys.delete(e.code);
             const ev = "keyrelease";
-            this._HandleListeners(e.key, ev);
+            this._HandleListeners(e.code, ev);
         }
         IsPressed(key) {
             return this._keys.has(key);

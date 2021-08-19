@@ -46,11 +46,11 @@
         <div class="loadingScreen text-centered">
             <div class="vertically-centered">
                 <div style="display: inline-block; background: black; padding: 12px;">
-                    <img src="res/assets/gifs/player.gif" alt="Running Grotto">
+                    <img src="res/assets/gifs/player.gif" alt="Grotto">
                 </div>
                 <p class="levelLoadingText"></p>
             </div>
-            <p class="levelLoadingHint">Hint: Don't jump into lava</p>
+            <p class="levelLoadingHint"></p>
         </div>
         <div class="levelScreen">
             <canvas id="game"></canvas>
@@ -62,7 +62,17 @@
                 <div id="shoot-btn" class="controlButton">
                     <span>Shoot</span>
                 </div>
-                <div id="hpbar"></div>
+                <div id="hpbar">
+                    <img id="hpbar-image" src="res/assets/spritesheets/meter.png" alt="HP Bar">
+                </div>
+                <div id="crystals">
+                    <img id="crystals-image" src="res/assets/gifs/crystal.gif" alt="Crystal">
+                    <span id="crystals-count">0</span>
+                </div>
+                <div id="lives">
+                    <img id="lives-image" src="res/assets/png/grotto.png" alt="Grotto">
+                    <span id="lives-count">3</span>
+                </div>
             </div>
             <div class="vertically-centered">
                 <div class="textbox-container"></div>

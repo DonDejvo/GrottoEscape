@@ -34,6 +34,7 @@ export const physics = (() => {
             super(params);
             this._width = params.width;
             this._height = params.height;
+            this._edges = (params.edges || [1, 1, 1, 1]);
         }
         get left() {
             return this._pos.x - this._width / 2;
@@ -94,16 +95,21 @@ export const physics = (() => {
                 let x = vec.x / a + mover._oldPos.x;
                 if(Math.abs(x - platform._pos.x) < (mover._width + platform._width) / 2) {
                     if(vec.y > 0) {
-                        mover._pos.y = y - 0.001;
-                        mover._collide.bottom.add(platform);
+                        if(platform._edges[0]) {
+                            mover._pos.y = y - 0.001;
+                            mover._collide.bottom.add(platform);
+                        }
                     } else {
-                        mover._pos.y = y + 0.001;
-                        mover._collide.top.add(platform);
+                        if(platform._edges[2]) {
+                            mover._pos.y = y + 0.001;
+                            mover._collide.top.add(platform);
+                        }
                     }
                 }
             }
         }
-        if(!collided && vec.x != 0) {
+
+        if(!collided && vec.x != 0 && (platform._edges[3] || platform._edges[1])) {
             let x;
             x = (vec.x > 0 ? platform.left - mover._width / 2 : platform.right + mover._width / 2);
 
@@ -112,11 +118,15 @@ export const physics = (() => {
                 let y = vec.y / a + mover._oldPos.y;
                 if(Math.abs(y - platform._pos.y) < (mover._height + platform._height) / 2) {
                     if(vec.x > 0) {
-                        mover._pos.x = x - 0.001;
-                        mover._collide.right.add(platform);
+                        if(platform._edges[3]) {
+                            mover._pos.x = x - 0.001;
+                            mover._collide.right.add(platform);
+                        }
                     } else {
-                        mover._pos.x = x + 0.001;
-                        mover._collide.left.add(platform);
+                        if(platform._edges[1]) {
+                            mover._pos.x = x + 0.001;
+                            mover._collide.left.add(platform);
+                        }
                     }
                 }
             }
@@ -126,25 +136,27 @@ export const physics = (() => {
     };
 
     const ResolveCollisionLine = (mover, platform) => {
-        if(
-            (mover._pos.x + mover._width / 2 - platform._start.x) * (mover._pos.x - mover._width / 2 - platform._end.x) > 0 ||
-            (mover._pos.y + mover._height / 2 - Math.min(platform._start.y, platform._end.y)) * (mover._pos.y - mover._height / 2 - Math.max(platform._start.y, platform._end.y)) > 0
-        ) {
+        if(!DetectCollisionBoxVsLine(mover, platform)) {
+            return;
+        }
+
+        const vec = mover._pos.Clone().Sub(mover._oldPos);
+        if(vec.y < 0) {
             return;
         }
         
         const f = (x) => {
             return platform._start.y + x / (platform._end.x - platform._start.x) * (platform._end.y - platform._start.y);
         };
-        const leftBottom = Math.max(mover._pos.x - mover._width / 2 - platform._start.x, 0);
-        const rightBottom = Math.min(mover._pos.x + mover._width / 2 - platform._start.x, platform._end.x - platform._start.x);
+        const leftBottom = Math.max(mover.left - platform._start.x, 0);
+        const rightBottom = Math.min(mover.right - platform._start.x, platform._end.x - platform._start.x);
 
         const minY = Math.min(f(leftBottom), f(rightBottom));
         const dy = minY - mover._pos.y;
         if(dy > mover._height / 2) {
             return;
         }
-        mover._pos.y -= mover._height / 2 - dy;
+        mover._pos.y = minY - mover._height / 2 - 0.001;
         mover._collide.bottom.add(platform);
     };
 

@@ -1,25 +1,25 @@
+import { drawable } from "./drawable.js";
 import { enemy_entity } from "./enemy-entity.js";
 import { entity } from "./entity.js";
 import { physics } from "./physics.js";
 import { player_entity } from "./player-entity.js";
 import { Scene } from "./scene.js";
 import { spatial_hash_grid } from "./spatial-hash-grid.js";
-import { Sprite } from "./sprite.js";
-import { tile } from "./tile.js";
+import { StorypointHandler } from "./storypoint.js";
 import { Vector } from "./vector.js";
 
 export class Level extends Scene {
     constructor(params) {
         super(params);
+        this._data = this._params.data;
+        this._textboxHandler = this._params.textboxHandler;
+        this._input = this._params.input;
+        this._storypointIndex = 0;
         this._Init();
     }
     _Init() {
-
-        this._textboxHandler = this._params.textboxHandler;
-        this._textboxHandler._domElement.addEventListener(this._eventByDevice, () => this._NextMessage());
-        this._input = this._params.input;
-
-        const tilemap = this._params.tilemap;
+        
+        const tilemap = this._resources[this._data.tilemap];
         const tileset = this._params.tileset;
         const tileWidth = 48;
         const tileHeight = 48;
@@ -31,7 +31,7 @@ export class Level extends Scene {
             const InitPlayer = (e) => {
                 e.groupList.add("player");
 
-                const sprite = new Sprite({
+                const sprite = new drawable.Sprite({
                     width: tileWidth,
                     height: tileHeight,
                     zIndex: zIndex,
@@ -85,7 +85,7 @@ export class Level extends Scene {
                 e.groupList.add("enemy");
                 e.groupList.add("bat");
 
-                const sprite = new Sprite({
+                const sprite = new drawable.Sprite({
                     width: tileWidth,
                     height: tileHeight,
                     zIndex: zIndex,
@@ -100,8 +100,8 @@ export class Level extends Scene {
                 e.AddComponent(sprite);
 
                 const body = new physics.Box({
-                    width: tileWidth * 1,
-                    height: tileHeight * 1
+                    width: tileWidth * 0.8,
+                    height: tileHeight * 0.7
                 });
                 e.AddComponent(body, "body");
 
@@ -119,7 +119,7 @@ export class Level extends Scene {
                 e.groupList.add("enemy");
                 e.groupList.add("slime");
 
-                const sprite = new Sprite({
+                const sprite = new drawable.Sprite({
                     width: tileWidth,
                     height: tileHeight,
                     zIndex: zIndex,
@@ -154,7 +154,7 @@ export class Level extends Scene {
                 e.groupList.add("enemy");
                 e.groupList.add("lizard");
 
-                const sprite = new Sprite({
+                const sprite = new drawable.Sprite({
                     width: tileWidth,
                     height: tileHeight,
                     zIndex: zIndex,
@@ -172,8 +172,8 @@ export class Level extends Scene {
                 e.AddComponent(sprite);
 
                 const body = new physics.Box({
-                    width: tileWidth * 1,
-                    height: tileHeight * 1,
+                    width: tileWidth * 0.8,
+                    height: tileHeight * 0.98,
                     frictionY: 0.01
                 });
                 e.AddComponent(body, "body");
@@ -192,7 +192,7 @@ export class Level extends Scene {
                 e.groupList.add("enemy");
                 e.groupList.add("skeleton");
 
-                const sprite = new Sprite({
+                const sprite = new drawable.Sprite({
                     width: tileWidth,
                     height: tileHeight,
                     zIndex: zIndex,
@@ -228,7 +228,7 @@ export class Level extends Scene {
                 e.groupList.add("enemy");
                 e.groupList.add("ghost");
 
-                const sprite = new Sprite({
+                const sprite = new drawable.Sprite({
                     width: tileWidth,
                     height: tileHeight,
                     zIndex: zIndex,
@@ -260,11 +260,46 @@ export class Level extends Scene {
                 e.AddComponent(new enemy_entity.GhostController());
             }
 
+            const InitLavaball = (e) => {
+                e.groupList.add("lavaball");
+
+                const sprite = new drawable.Sprite({
+                    width: tileWidth,
+                    height: tileHeight,
+                    zIndex: zIndex,
+                    image: this._resources["lavaball"],
+                    frameWidth: 16,
+                    frameHeight: 16
+                });
+                sprite.AddAnim("fly", [
+                    {x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}
+                ]);
+                sprite.PlayAnim("fly", 180, true);
+                e.AddComponent(sprite);
+
+                const body = new physics.Box({
+                    width: tileWidth * 0.8,
+                    height: tileHeight * 0.8,
+                    frictionX: 0.01,
+                    frictionY: 0.01
+                });
+                e.AddComponent(body, "body");
+
+                const gridController = new spatial_hash_grid.SpatialGridController({
+                    grid: this._grid,
+                    width: body._width,
+                    height: body._height
+                });
+                e.AddComponent(gridController);
+
+                e.AddComponent(new enemy_entity.LavaballController());
+            }
+
             const InitCrystal = (e) => {
                 e.groupList.add("item");
                 e.groupList.add("crystal");
 
-                const sprite = new Sprite({
+                const sprite = new drawable.Sprite({
                     width: tileWidth,
                     height: tileHeight,
                     zIndex: zIndex,
@@ -292,14 +327,49 @@ export class Level extends Scene {
                 e.AddComponent(gridController);
             }
 
+            const InitExit = (e) => {
+                e.groupList.add("exit");
+
+                const text = new drawable.Text({
+                    width: tileWidth * 2,
+                    height: tileHeight,
+                    zIndex: zIndex,
+                    fontSize: 24,
+                    text: "EXIT",
+                    color: "green"
+                });
+                e.AddComponent(text);
+
+                const body = new physics.Box({
+                    width: tileWidth * 2,
+                    height: tileHeight * 1,
+                });
+                e.AddComponent(body, "body");
+            }
+
+            const InitStorypoint = (e) => {
+                e.groupList.add("storypoint");
+
+                const body = new physics.Box({
+                    width: tileWidth * 3,
+                    height: tileHeight * 3,
+                });
+                e.AddComponent(body, "body");
+
+                e.AddComponent(new StorypointHandler());
+            }
+
             for(let obj of layer.objects) {
                 let elem, name;
 
+                const pos = new Vector(obj.x * tileWidth / tilemap.tilewidth, obj.y * tileHeight / tilemap.tileheight);
+
                 elem = new entity.Entity();
-                elem.SetPosition(new Vector(obj.x * tileWidth / tilemap.tilewidth, obj.y * tileHeight / tilemap.tileheight));
+                elem.SetPosition(pos);
 
                 switch(obj.name) {
                     case "player":
+                        this._startPos = pos;
                         InitPlayer(elem);
                         name = "player";
                         break;
@@ -320,6 +390,16 @@ export class Level extends Scene {
                         break;
                     case "crystal":
                         InitCrystal(elem);
+                        break;
+                    case "lavaball":
+                        InitLavaball(elem);
+                        break;
+                    case "exit":
+                        InitExit(elem);
+                        name = "exit";
+                        break;
+                    case "storypoint":
+                        InitStorypoint(elem);
                         break;
                 }
                 
@@ -355,11 +435,11 @@ export class Level extends Scene {
                         frames.push({ x: tileX, y: tileY });
                     }
                     params.frames = frames;
-                    t = new tile.AnimatedTile(params);
+                    t = new drawable.AnimatedTile(params);
                 } else {
                     params.tileX = id % tileset.columns * tileset.tileWidth;
                     params.tileY = Math.floor(id / tileset.columns) * tileset.tileHeight;
-                    t = new tile.Tile(params);
+                    t = new drawable.Tile(params);
                 }
 
                 let elem = new entity.Entity();
@@ -368,11 +448,13 @@ export class Level extends Scene {
                 elem.AddComponent(t);
                 
                 if(tilesetObj.props.collide) {
-                    if(tilesetObj.props.type == "block" || tilesetObj.props.type == "ledder") {
+                    if(tilesetObj.props.type == "block" || tilesetObj.props.type == "ledder" || tilesetObj.props.type == "platform") {
                         elem.groupList.add(tilesetObj.props.type);
+                        const edges = [...new Array(4)].map((_, i) => Math.floor(tilesetObj.props.edges / Math.pow(10, 3 - i)) % 10);
                         const body = new physics.Box({
                             width: tileWidth,
-                            height: tileHeight
+                            height: tileHeight,
+                            edges: edges
                         });
                         elem.AddComponent(body, "body");
                     } else if(tilesetObj.props.type == "stairs") {
@@ -390,20 +472,6 @@ export class Level extends Scene {
                     });
                     elem.AddComponent(gridController);
                 }
-                /*if(tilesetObj?.props?.collideType) {
-                    const body = new physics.Box({
-                        width: tileWidth,
-                        height: tileHeight
-                    });
-                    elem.AddComponent(body, "body");
-    
-                    const gridController = new spatial_hash_grid.SpatialGridController({
-                        grid: this._grid,
-                        width: tileWidth,
-                        height: tileHeight
-                    });
-                    elem.AddComponent(gridController);
-                }*/
                 
 
                 this.Add(elem);
@@ -442,75 +510,13 @@ export class Level extends Scene {
         super.Pause();
         document.querySelector("#game-controls").style.visibility = "hidden";
     }
-}
-
-/*
-
-    for(let i = 0; i < tilemap.layers.length; ++i) {
-        if(tilemap.layers[i].type == "tilelayer") {
-            HandleTilelayer(tilemap.layers[i], i);
-        } else if(tilemap.layers[i].type == "objectgroup") {
-            HandleObjectgroup(tilemap.layers[i], i);
+    OnClick() {
+        this._NextMessage();
+    }
+    Remove(e) {
+        super.Remove(e);
+        if(e.GetComponent("SpatialGridController")) {
+            e.GetComponent("SpatialGridController").Remove();
         }
     }
-
-*/
-
-/*
-
-const HandleObjectgroup = (layer, zIndex) {
-
-    for(let obj of layer.objects) {
-        let entity;
-        switch(obj.name) {
-            case "player":
-                entity = new Player();
-            case "exit":
-                entity = new Exit();
-                break;
-        }
-        entity._zIndex = zIndex;
-        entity.SetPosition(new Vector(obj.x, obj.y));
-        this.Add(entity);
-    }
-
 }
-
-*/
-
-/*
-
-const HandleTilelayer = (layer, zIndex) {
-
-    const id = (layer.data[j]) - 1;
-    let tile;
-
-    const params = {
-        width: tileWidth,
-        height: tileHeight,
-        zIndex: zIndex,
-        tileWidth:  tileset.tilewidth,
-        tileHeight: tileset.tileheight
-    };
-
-    if(tileset[id].animation) {
-        const frames = [];
-        for(let frame of tileset[id].animation) {
-            const tileX = frame % tileset.columns * tileset.tilewidth;
-            const tileY = Math.floor(frame / tileset.columns) * tileset.tileheight;
-            frames.push({x: tileX, y: tileY});
-        }
-        params.frames = frames;
-        tile = new AnimatedTile(params);
-    } else {
-        params.tileX = id % tileset.columns * tileset.tilewidth;
-        params.tileY = Math.floor(id / tileset.columns) * tileset.tileheight;
-        tile = new Tile(params);
-    }
-
-    tile.SetPosition(new Vector(j % tilemap.width * tileWidth, Math.floor(j / tilemap.width) * tileHeight));
-    this.Add(tile);
-
-}
-
-*/
