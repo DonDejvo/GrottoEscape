@@ -14,6 +14,7 @@ export const drawable = (() => {
                 x: (this._params.flipX || false),
                 y: (this._params.flipY || false)
             };
+            this._opacity = this._params.opacity !== undefined ? this._params.opacity : 1;
         }
         SetSize(w, h) {
             this._width = w;
@@ -138,6 +139,7 @@ export const drawable = (() => {
         }
         Draw(ctx) {
             ctx.save();
+            ctx.globalAlpha = this._opacity;
             ctx.translate(this._pos.x, this._pos.y);
             ctx.scale(this._flip.x ? -1 : 1, this._flip.y ? -1 : 1);
             ctx.drawImage(

@@ -30,7 +30,8 @@ export class Loader {
         ++this._counter;
         this._HandleOnProgress(obj);
         if(this._counter === this._size) {
-            this._counter = this._size = this._toLoad.length = 0;
+            this._counter = this._size = 0;
+            this._toLoad = [];
             cb(loaded);
         }
     }
@@ -74,14 +75,14 @@ export class Loader {
         image.src = p;
         image.addEventListener("load", () => {
             cb(image);
-        });
+        }, {once: true});
     }
     static LoadAudio(p, cb) {
         const audio = new Audio(p);
         audio.load();        
         audio.addEventListener("canplaythrough", () => {
             cb(audio);
-        });
+        }, {once: true});
     }
     static LoadJSON(p, cb) {
         fetch(p)

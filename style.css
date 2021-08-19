@@ -261,7 +261,6 @@ img {
 #hpbar-image {
     position: relative;
     width: 100%;
-    top: calc(5 * -100%);
 }
 
 #crystals {

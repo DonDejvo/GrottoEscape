@@ -54,6 +54,9 @@ export class Level extends Scene {
                 sprite.AddAnim("shoot", [
                     {x: 3, y: 0}
                 ]);
+                sprite.AddAnim("die", [
+                    {x: 3, y: 1}
+                ]);
                 e.AddComponent(sprite);
 
                 const body = new physics.Box({
@@ -70,7 +73,6 @@ export class Level extends Scene {
                     height: body._height
                 });
                 e.AddComponent(gridController);
-                e.AddComponent(new player_entity.Controller());
                 e.AddComponent(new player_entity.Input({
                     keyboard: this._input.keyboard,
                     joystick: this._input.joystick,
@@ -448,7 +450,7 @@ export class Level extends Scene {
                 elem.AddComponent(t);
                 
                 if(tilesetObj.props.collide) {
-                    if(tilesetObj.props.type == "block" || tilesetObj.props.type == "ledder" || tilesetObj.props.type == "platform") {
+                    if(["block", "ledder", "platform", "lava", "water", "spikes"].includes(tilesetObj.props.type)) {
                         elem.groupList.add(tilesetObj.props.type);
                         const edges = [...new Array(4)].map((_, i) => Math.floor(tilesetObj.props.edges / Math.pow(10, 3 - i)) % 10);
                         const body = new physics.Box({

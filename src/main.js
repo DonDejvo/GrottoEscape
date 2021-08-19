@@ -12,6 +12,7 @@ import { tileset } from "./tileset.js";
 import { Vector } from "./vector.js";
 import { ExitHandler } from "./exit-handler.js";
 import { math } from "./math.js";
+import { player_entity } from "./player-entity.js";
 
 class Game {
     constructor() {
@@ -33,6 +34,7 @@ class Game {
             level: 0,
             lives: 5,
             bullets: 3,
+            max_hitpoints: 100,
             hitpoints: 100,
             crystals: 0
         };
@@ -52,6 +54,14 @@ class Game {
             input: this._input
         });
         const player = levelScene.Get("player");
+        player.AddComponent(new player_entity.Controller({
+            states: this._gameState,
+            dom: {
+                lives: document.getElementById("lives-count"),
+                hpbar: document.getElementById("hpbar-image"),
+                crystals: document.getElementById("crystals-count"),
+            }
+        }));
         levelScene._camera.SetPosition(player._pos);
         levelScene._camera.Follow(player);
         this._sceneManager.AddScene("level" + id, levelScene);

@@ -65,9 +65,16 @@ export const enemy_entity = (() => {
             const gridController = this.GetComponent("SpatialGridController");
             const sprite = this.GetComponent("Sprite");
 
+            const player = this.FindEntity("player").GetComponent("body");
+
             const result = gridController.FindNearby(body._width * 4, body._height * 2);
             const tiles = result.filter(client => client.entity.groupList.has("block") || client.entity.groupList.has("platform"));
             const ledders = result.filter(client => client.entity.groupList.has("ledder"));
+
+            if(physics.DetectCollision(player, body)) {
+                const playerController = player.GetComponent("Controller");
+                playerController.ReceiveDamage(20);
+            }
 
             const collide = {
                 left: body._collide.left.size > 0,
