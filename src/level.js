@@ -136,7 +136,7 @@ export class Level extends Scene {
                 e.AddComponent(sprite);
 
                 const body = new physics.Box({
-                    width: tileWidth * 1,
+                    width: tileWidth * 0.7,
                     height: tileHeight * 0.8,
                     frictionY: 0.01
                 });
