@@ -10,17 +10,17 @@ export const levelData = [
                     text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nunc auctor. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit."
                 },
                 {
-                    image: "developer.png",
+                    image: "demon.png",
                     text: "Etiam sapien elit, consequat eget, tristique non, venenatis quis, ante. Etiam quis quam."
                 },
                 {
-                    image: "developer.png",
+                    image: "demon.png",
                     text: "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer pellentesque quam vel velit."
                 }
             ],
             [
                 {
-                    image: "developer.png",
+                    image: "demon.png",
                     text: "Phasellus et lorem id felis nonummy placerat. Integer malesuada. Maecenas lorem. Nullam dapibus fermentum ipsum."
                 }
             ],
@@ -30,7 +30,7 @@ export const levelData = [
                     text: "Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo."
                 },
                 {
-                    image: "developer.png",
+                    image: "demon.png",
                     text: "Sed convallis magna eu sem. Morbi scelerisque luctus velit. Maecenas lorem."
                 }
             ],
@@ -58,17 +58,17 @@ export const levelData = [
                     text: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nunc auctor. Nullam justo enim, consectetuer nec, ullamcorper ac, vestibulum in, elit."
                 },
                 {
-                    image: "developer.png",
+                    image: "demon.png",
                     text: "Etiam sapien elit, consequat eget, tristique non, venenatis quis, ante. Etiam quis quam."
                 },
                 {
-                    image: "developer.png",
+                    image: "demon.png",
                     text: "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer pellentesque quam vel velit."
                 }
             ],
             [
                 {
-                    image: "developer.png",
+                    image: "demon.png",
                     text: "Phasellus et lorem id felis nonummy placerat. Integer malesuada. Maecenas lorem. Nullam dapibus fermentum ipsum."
                 }
             ],
@@ -78,7 +78,7 @@ export const levelData = [
                     text: "Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo."
                 },
                 {
-                    image: "developer.png",
+                    image: "demon.png",
                     text: "Sed convallis magna eu sem. Morbi scelerisque luctus velit. Maecenas lorem."
                 }
             ],

@@ -20,12 +20,12 @@ export class StorypointHandler extends entity.Component {
 
             try {
                 for(let m of scene._data.messages[scene._storypointIndex]) {
-                    scene.AddMessage("res/assets/png/" + m.image, m.text);
+                    scene.AddMessage(m.image, m.text);
                 }
     
                 ++scene._storypointIndex;
             } catch(err) {
-                console.log("messages missing");
+                console.log("Textbox Error");
             }
         }
     }

@@ -1,18 +1,4 @@
-import { drawable } from "./drawable.js";
-import { entity } from "./entity.js";
-import { input } from "./input.js";
-import { Level } from "./level.js";
-import { levelData } from "./levelData.js";
-import { Loader } from "./loader.js";
-import { Renderer } from "./renderer.js";
-import { SceneManager } from "./scene-manager.js";
-import { Scene } from "./scene.js";
-import { textbox } from "./textbox.js";
-import { tileset } from "./tileset.js";
-import { Vector } from "./vector.js";
-import { ExitHandler } from "./exit-handler.js";
-import { math } from "./math.js";
-import { player_entity } from "./player-entity.js";
+import { drawable, entity, input, Level, levelData, Loader, Renderer, SceneManager, Scene, textbox, tileset, Vector, ExitHandler, math, player_entity } from "./exporter.js";
 
 class Game {
     constructor() {
@@ -184,7 +170,8 @@ class Game {
         this._eventByDevice = navigator.userAgent.match(/ipod|ipad|iphone/i) ? "touchstart" : "click";
 
         this._textboxHandler = new textbox.TextboxHandler({
-            domElement: document.querySelector(".textbox-container")
+            domElement: document.querySelector(".textbox-container"),
+            path: "res/assets/png"
         });
 
         this._sceneManager = new SceneManager();

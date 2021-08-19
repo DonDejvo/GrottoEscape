@@ -3,6 +3,7 @@ export const textbox = (() => {
     class TextboxHandler {
         constructor(params) {
             this._domElement = params.domElement;
+            this._path = params.path;
             this._messages = [];
             this._blocked = false;
             this._domElement.style.display = "none";
@@ -22,7 +23,7 @@ export const textbox = (() => {
             const message = this._messages.shift();
             this._domElement.innerHTML = `
                 <div class="textbox-image">
-                    <img src="${message.imageURL}" alt="Textbox image">
+                    <img src="${this._path + "/" + message.imageURL}" alt="Textbox image">
                 </div>
                 <div class="textbox-text">
                     <p>${message.text}</p>
