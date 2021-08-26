@@ -6,11 +6,19 @@ export const textbox = (() => {
             this._path = params.path;
             this._messages = [];
             this._blocked = false;
+
             this._domElement.style.display = "none";
+
+            this._images = new Map();
+            for(let label in params.images) {
+                const img = document.createElement("img");
+                img.setAttribute("src", this._path + "/" + params.images[label]);
+                this._images.set(label, img);
+            }
         }
-        AddMessage(imageURL, text) {
+        AddMessage(image, text) {
             this._messages.push({
-                imageURL: imageURL,
+                image: image,
                 text: text
             });
         }
@@ -21,14 +29,23 @@ export const textbox = (() => {
             this._domElement.style.display = "block";
             this._blocked = true;
             const message = this._messages.shift();
-            this._domElement.innerHTML = `
-                <div class="textbox-image">
-                    <img src="${this._path + "/" + message.imageURL}" alt="Textbox image">
-                </div>
-                <div class="textbox-text">
-                    <p>${message.text}</p>
-                </div>
-            `;
+            this._domElement.innerHTML = "";
+
+            const imageContainer = document.createElement("div");
+            imageContainer.classList.add("textbox-image");
+            imageContainer.appendChild(this._images.get(message.image));
+
+            this._domElement.appendChild(imageContainer);
+
+            const textContainer = document.createElement("div");
+            textContainer.classList.add("textbox-text");
+
+            const text = document.createElement("p");
+            text.textContent = message.text;
+            textContainer.appendChild(text);
+
+            this._domElement.appendChild(textContainer);
+            
         }
         NextMessage() {
             this._blocked = false;

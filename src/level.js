@@ -280,8 +280,8 @@ export class Level extends Scene {
                 e.AddComponent(sprite);
 
                 const body = new physics.Box({
-                    width: tileWidth * 0.8,
-                    height: tileHeight * 0.8,
+                    width: tileWidth * 0.72,
+                    height: tileHeight * 0.6,
                     frictionX: 0.01,
                     frictionY: 0.01
                 });
@@ -317,7 +317,37 @@ export class Level extends Scene {
 
                 const body = new physics.Box({
                     width: tileWidth * 0.3,
-                    height: tileHeight * 0.5,
+                    height: tileHeight * 0.45,
+                });
+                e.AddComponent(body, "body");
+
+                const gridController = new spatial_hash_grid.SpatialGridController({
+                    grid: this._grid,
+                    width: body._width,
+                    height: body._height
+                });
+                e.AddComponent(gridController);
+            }
+
+            const InitHeal = (e) => {
+                e.groupList.add("item");
+                e.groupList.add("heal");
+
+                const img = new drawable.Picture({
+                    width: tileWidth,
+                    height: tileHeight,
+                    zIndex: zIndex,
+                    image: this._resources["items"],
+                    frameWidth: 16,
+                    frameHeight: 16,
+                    posX: 1,
+                    posY: 3
+                });
+                e.AddComponent(img);
+
+                const body = new physics.Box({
+                    width: tileWidth * 0.3,
+                    height: tileHeight * 0.45,
                 });
                 e.AddComponent(body, "body");
 
@@ -338,7 +368,8 @@ export class Level extends Scene {
                     zIndex: zIndex,
                     fontSize: 24,
                     text: "EXIT",
-                    color: "green"
+                    color: "green",
+                    fontFamily: this._resources["mainFont"]
                 });
                 e.AddComponent(text);
 
@@ -392,6 +423,9 @@ export class Level extends Scene {
                         break;
                     case "crystal":
                         InitCrystal(elem);
+                        break;
+                    case "heal":
+                        InitHeal(elem);
                         break;
                     case "lavaball":
                         InitLavaball(elem);

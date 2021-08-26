@@ -64,8 +64,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":465.015875020538,
-                 "y":316.88062270661
+                 "x":465.016,
+                 "y":316.881
                 }, 
                 {
                  "height":0,
@@ -100,8 +100,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":55.8190087189879,
-                 "y":311.72762270661
+                 "x":55.819,
+                 "y":311.728
                 }, 
                 {
                  "height":0,
@@ -112,7 +112,7 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":665.105340599157,
+                 "x":665.105,
                  "y":265.355
                 }, 
                 {
@@ -124,8 +124,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":352.518586012377,
-                 "y":281.24262270661
+                 "x":352.519,
+                 "y":281.243
                 }, 
                 {
                  "height":0,
@@ -136,8 +136,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":484.337586943425,
-                 "y":117.22000109535
+                 "x":484.338,
+                 "y":117.22
                 }, 
                 {
                  "height":0,
@@ -148,8 +148,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":507.094583493072,
-                 "y":118.078755682129
+                 "x":507.095,
+                 "y":118.079
                 }, 
                 {
                  "height":0,
@@ -160,8 +160,56 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":164.022126074812,
-                 "y":291.547182211512
+                 "x":164.022,
+                 "y":291.547
+                }, 
+                {
+                 "height":0,
+                 "id":14,
+                 "name":"lizard",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":535.433484856783,
+                 "y":139.118243058218
+                }, 
+                {
+                 "height":0,
+                 "id":15,
+                 "name":"lavaball",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":161.875239607865,
+                 "y":355.095021633167
+                }, 
+                {
+                 "height":0,
+                 "id":16,
+                 "name":"bat",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":523.840297935265,
+                 "y":317.309819814886
+                }, 
+                {
+                 "height":0,
+                 "id":17,
+                 "name":"heal",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":711.478175146503,
+                 "y":130.101319897037
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -194,7 +242,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":14,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.7.1",

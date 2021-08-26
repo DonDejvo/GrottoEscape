@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.1" orientation="orthogonal" renderorder="right-down" width="48" height="24" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="14">
+<map version="1.5" tiledversion="1.7.1" orientation="orthogonal" renderorder="right-down" width="48" height="24" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="18">
  <editorsettings>
   <export target="../levels/level00.json" format="json"/>
  </editorsettings>
@@ -92,6 +92,18 @@
    <point/>
   </object>
   <object id="13" name="crystal" x="164.022" y="291.547">
+   <point/>
+  </object>
+  <object id="14" name="lizard" x="535.433" y="139.118">
+   <point/>
+  </object>
+  <object id="15" name="lavaball" x="161.875" y="355.095">
+   <point/>
+  </object>
+  <object id="16" name="bat" x="523.84" y="317.31">
+   <point/>
+  </object>
+  <object id="17" name="heal" x="711.478" y="130.101">
    <point/>
   </object>
  </objectgroup>

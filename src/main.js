@@ -10,10 +10,11 @@ class Game {
         }
         this._music = music;
         this._music.loop = true;
+        this._music.currentTime = 0;
         this._music.play();
     }
     _PauseMusic() {
-        this._music.pause();
+        (!this._music.paused) ? this._music.pause() : this._music.play();
     }
     _StartGame() {
         this._gameState = {
@@ -135,10 +136,13 @@ class Game {
             .AddAudio("levelTheme", "audio/bg-music/levelTheme.mp3")
             .AddJSON("tileset", "tilesets/grotto_tileset.json")
             .AddJSON("level01", "levels/level00.json")
+            .AddFont("mainFont", "fonts/ARCADECLASSIC.TTF")
             .Load((data) => {
                 this._resources = data;
                 this._tileset = new tileset.Tileset(this._resources["tileset"], this._resources["tileset-image"]);
-                
+                document.body.style.fontFamily = this._resources["mainFont"];
+
+
                 this._InitMenu();
 
                 document.querySelector(".loadingText").textContent = "Done";
@@ -171,7 +175,11 @@ class Game {
 
         this._textboxHandler = new textbox.TextboxHandler({
             domElement: document.querySelector(".textbox-container"),
-            path: "res/assets/png"
+            path: "res/assets/png",
+            images: {
+                "player": "player.png",
+                "demon": "demon.png"
+            }
         });
 
         this._sceneManager = new SceneManager();

@@ -25,6 +25,10 @@ export class Loader {
         this._Add(n, p, "json");
         return this;
     }
+    AddFont(n, p) {
+        this._Add(n, p, "font");
+        return this;
+    }
     _HandleCallback(loaded, obj, e, cb) {
         loaded[obj.name] = e;
         ++this._counter;
@@ -58,15 +62,19 @@ export class Loader {
                     });
                     break;
                 case "audio":
-                    loaded[e.name] = Loader.LoadAudio(e.path, (elem) => {
+                    Loader.LoadAudio(e.path, (elem) => {
                         this._HandleCallback(loaded, e, elem, cb);
                     });
                     break;
                 case "json":
-                    loaded[e.name] = Loader.LoadJSON(e.path, (elem) => {
+                    Loader.LoadJSON(e.path, (elem) => {
                         this._HandleCallback(loaded, e, elem, cb);
                     });
                     break;
+                case "font":
+                    Loader.LoadFont(e.name, e.path, (elem) => {
+                        this._HandleCallback(loaded, e, elem, cb);
+                    });
             }
         }
     }
@@ -88,5 +96,14 @@ export class Loader {
         fetch(p)
             .then(response => response.json())
             .then(json => cb(json));
+    }
+    static LoadFont(n, p, cb) {
+        const font = new FontFace(n, `url(${p})`);
+        font
+            .load()
+            .then((loadedFont) => {
+                document.fonts.add(loadedFont);
+                cb(n);
+            });
     }
 }

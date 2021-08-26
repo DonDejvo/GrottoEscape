@@ -2,7 +2,6 @@ import { entity } from "./entity.js";
 import { physics } from "./physics.js";
 import { drawable } from "./drawable.js";
 import { spatial_hash_grid } from "./spatial-hash-grid.js";
-import { bullet } from "./bullet.js";
 import { Vector } from "./vector.js";
 import { math } from "./math.js";
 
@@ -55,9 +54,11 @@ export const player_entity = (() => {
 
             for(let client of items) {
                 if(physics.DetectCollision(body, client.entity.GetComponent("body"))) {
+                    this._parent._scene._resources["pickup-sound"].cloneNode(true).play();
                     if(client.entity.groupList.has("crystal")) {
                         this.SetCrystals(this.crystals + 1);
-                        this._parent._scene._resources["pickup-sound"].play();
+                    } else if(client.entity.groupList.has("heal")) {
+                        this.SetHitpoints(this.hitpoints + 30);
                     }
                     this._parent._scene.Remove(client.entity);
                 }
@@ -85,7 +86,6 @@ export const player_entity = (() => {
             } else if(this._shooting) {
                 if(currentAnim != "shoot") sprite.PlayAnim("shoot", 540, false, () => {
                     this._shooting = false;
-                    this._CreateFireball();
                 });
             } else if(this._climbing && !collide.bottom) {
                 if(input._keys.up || input._keys.down) {
@@ -122,7 +122,7 @@ export const player_entity = (() => {
                 if((collide.bottom || this._climbing) && input._keys.jump) {
                     this._climbing = false;
                     /*if(!collide.top)*/ body._vel.y = -390; //-22000 * elapsedTimeS;
-                    this._parent._scene._resources["jump-sound"].play();
+                    this._parent._scene._resources["jump-sound"].cloneNode(true).play();
                 }
     
                 if(((this._climbing && !collide.bottom) || (!this._climbing && (input._keys.up || input._keys.down))) && ledders1.length > 0) {
@@ -184,47 +184,6 @@ export const player_entity = (() => {
                 }
             }
 
-        }
-        _CreateFireball() {
-            const e = new entity.Entity();
-            e.groupList.add("fireball");
-
-            e.SetPosition(this.GetComponent("body")._pos);
-
-            const sprite = new drawable.Sprite({
-                zIndex: this.GetComponent("Sprite")._zIndex,
-                width: 48,
-                height: 48,
-                image: this._parent._scene._resources["items"],
-                frameWidth: 16,
-                frameHeight: 16,
-                flipX: !this._lookingRight
-            });
-            sprite.AddAnim("fly", [
-                {x: 0, y: 2}, {x: 1, y: 2}
-            ]);
-            sprite.AddAnim("explode", [
-                {x: 3, y: 2}, {x: 4, y: 2}
-            ]);
-            sprite.PlayAnim("fly", 180, true);
-            e.AddComponent(sprite);
-            this._parent._scene.Add(e);
-            const body = new physics.Box({
-                width: sprite._width * 0.6,
-                height: sprite._height * 0.4
-            });
-            body._vel.x = this._lookingRight ? 300 : -300;
-            e.AddComponent(body, "body");
-
-            const gridController = new spatial_hash_grid.SpatialGridController({
-                grid: this._parent._scene._grid,
-                width: body._width,
-                height: body._height
-            });
-            e.AddComponent(gridController);
-            e.AddComponent(new bullet.FireballController({
-                target: "enemy"
-            }));
         }
         get hitpoints() {
             return this._params.states.hitpoints;

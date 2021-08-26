@@ -28,13 +28,14 @@ export const drawable = (() => {
             super(params);
             this._text = this._params.text;
             this._fontSize = this._params.fontSize;
+            this._fontFamily = (this._params.fontFamily || "Arial");
         }
         InitComponent() {
             this._pos = this._parent._pos;
         }
         Draw(ctx) {
             ctx.fillStyle = this._params.color;
-            ctx.font = this._fontSize + "px 'Press Start 2P'";
+            ctx.font = `${this._fontSize}px '${this._fontFamily}'`;
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillText(this._text, this._pos.x, this._pos.y);
@@ -70,6 +71,32 @@ export const drawable = (() => {
             if(this._x < -this._width + this._params.gameWidth / 2) {
                 ctx.drawImage(image, this._x + this._width, this._y, this._width, this._height);
             }
+            ctx.restore();
+        }
+    }
+
+    class Picture extends Drawable {
+        constructor(params) {
+            super(params);
+            this._frameWidth = (this._params.frameWidth || this._width);
+            this._frameHeight = (this._params.frameHeight || this._height);
+            this._framePos = {
+                x: (this._params.posX || 0),
+                y: (this._params.posY || 0)
+            }
+        }
+        InitComponent() {
+            this._pos = this._parent._pos;
+        }
+        Draw(ctx) {
+            ctx.save();
+            ctx.translate(this._pos.x, this._pos.y);
+            ctx.scale(this._flip.x ? -1 : 1, this._flip.y ? -1 : 1);
+            ctx.drawImage(
+                this._params.image,
+                this._framePos.x * this._frameWidth, this._framePos.y * this._frameHeight, this._frameWidth, this._frameHeight, 
+                -this._width / 2, -this._height / 2, this._width, this._height
+            );
             ctx.restore();
         }
     }
@@ -193,7 +220,8 @@ export const drawable = (() => {
         Layer: Layer,
         Sprite: Sprite,
         Tile: Tile,
-        AnimatedTile: AnimatedTile
+        AnimatedTile: AnimatedTile,
+        Picture: Picture
     }
 
 })();
